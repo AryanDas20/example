@@ -1,6 +1,9 @@
+
+NOTICE FOR THIS UPDATED PACKAGE: The old launch guide below is historical. This version removes phone/SMS OTP and uses email/password or Google sign-in plus email verification. Follow README-UPDATED.txt and the included current firestore.rules; do not enable Phone Auth just for this website.
+
 SUPERSEDED GUIDE NOTICE — READ README-UPDATED.txt FIRST
 ======================================================
-This older launch guide predates the Firebase-connected code in this ZIP. It contains historical statements that may say Firebase is not connected and references the earlier project/deployment. For the actual current files, Firebase project config, email/SMS verification, campus rules, chat and notification behavior, follow README-UPDATED.txt and inspect firebase-config.js. Do not copy old snippets or old rules over the files in this package.
+This older launch guide predates the Firebase-connected code in this ZIP. It contains historical statements that may say Firebase is not connected and references the earlier project/deployment. For the actual current files, Firebase project config, email verification, campus rules, chat and notification behavior, follow README-UPDATED.txt and inspect firebase-config.js. Do not copy old snippets or old rules over the files in this package.
 
 UNITRADE: CLEAN RELEASE + FIREBASE / GOOGLE SIGN-IN PUBLIC LAUNCH GUIDE
 =======================================================================
