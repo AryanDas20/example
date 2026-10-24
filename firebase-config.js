@@ -1,24 +1,29 @@
-/* UniTrade Firebase configuration for project: neotradeuni */
+
+/* UniTrade Firebase configuration */
 (function () {
   const firebaseConfig = {
-    apiKey: "AIzaSyDiuiUNFGqXxPpWHSFvL9PlmEVbe0yYeAw",
-    authDomain: "neotradeuni.firebaseapp.com",
-    projectId: "neotradeuni",
-    storageBucket: "neotradeuni.firebasestorage.app",
-    messagingSenderId: "366335596950",
-    appId: "1:366335596950:web:4df842b47ee85b13eb65b7",
-    measurementId: "G-S64RYCQ6LC"
+    apiKey: "AIzaSyDyBPI4gCPo6S6kbTyfByUNoQY32IsSbpY",
+    authDomain: "example-fb860.firebaseapp.com",
+    projectId: "example-fb860",
+    storageBucket: "example-fb860.firebasestorage.app",
+    messagingSenderId: "978072365632",
+    appId: "1:978072365632:web:fc620da535a2231ca8cda5",
+    measurementId: "G-TJ38Y50W30"
   };
 
   if (!window.firebase || !firebase.apps) {
-    console.error("UniTrade: Firebase SDK scripts did not load before firebase-config.js.");
+    console.error("Firebase SDK failed to load.");
     window.unitradeFirebaseReady = false;
     return;
   }
 
-  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
   window.unitradeFirebaseReady = true;
   window.unitradeAuth = firebase.auth();
   window.unitradeDb = firebase.firestore();
-  window.unitradeGoogleProvider = new firebase.auth.GoogleAuthProvider();
+  window.unitradeGoogleProvider =
+    new firebase.auth.GoogleAuthProvider();
 })();
