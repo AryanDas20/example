@@ -1,3 +1,7 @@
+SUPERSEDED GUIDE NOTICE — READ README-UPDATED.txt FIRST
+======================================================
+This older launch guide predates the Firebase-connected code in this ZIP. It contains historical statements that may say Firebase is not connected and references the earlier project/deployment. For the actual current files, Firebase project config, email/SMS verification, campus rules, chat and notification behavior, follow README-UPDATED.txt and inspect firebase-config.js. Do not copy old snippets or old rules over the files in this package.
+
 UNITRADE: CLEAN RELEASE + FIREBASE / GOOGLE SIGN-IN PUBLIC LAUNCH GUIDE
 =======================================================================
 Website: https://unitradeneo.vercel.app/

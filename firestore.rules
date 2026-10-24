@@ -5,6 +5,13 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function verifiedCampusUser() {
+      return signedIn()
+        && request.auth.token.email_verified == true
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.phoneVerified == true
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.collegeKey is string;
+    }
+
     function ownsNewDocument() {
       return signedIn() && request.resource.data.ownerUid == request.auth.uid;
     }
@@ -28,8 +35,7 @@ service cloud.firestore {
       allow create: if signedIn()
         && request.auth.uid == uid
         && request.resource.data.keys().hasOnly([
-          'name', 'email', 'photoURL', 'college', 'course', 'year',
-          'hostel', 'phone', 'createdAt', 'updatedAt'
+          'id','name','email','emailVerified','photoURL','college','collegeShort','collegeKey','collegeAliases','course','department','city','year','hostel','bio','phone','phoneVerified','studentId','createdAt','updatedAt'
         ]);
       allow get, update, delete: if signedIn() && request.auth.uid == uid;
       allow list: if false;
@@ -50,56 +56,76 @@ service cloud.firestore {
 
     // Searchable, intentionally limited profile fields. Never put phone/email here.
     match /publicProfiles/{uid} {
-      allow get, list: if signedIn() && resource.data.college is string;
+      allow get, list: if signedIn() && resource.data.collegeKey is string && resource.data.collegeKey == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.collegeKey;
       allow create, update: if signedIn() && request.auth.uid == uid
-        && request.resource.data.keys().hasOnly(['name','college','course','year','hostel','photoURL'])
+        && request.resource.data.keys().hasOnly(['name','college','collegeShort','collegeKey','collegeAliases','course','department','year','hostel','city','bio','photoURL'])
         && request.resource.data.college is string
+        && request.resource.data.collegeKey is string
         && request.resource.data.name is string;
       allow delete: if signedIn() && request.auth.uid == uid;
     }
 
     match /chats/{chatId} {
-      allow create: if signedIn() && request.auth.uid in request.resource.data.participants
-        && request.resource.data.participants.size() == 2;
+      allow create: if verifiedCampusUser() && request.auth.uid in request.resource.data.participants
+        && request.resource.data.participants.size() == 2
+        && request.resource.data.collegeKey is string
+        && request.resource.data.collegeKey == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.collegeKey
+        && get(/databases/$(database)/documents/users/$(request.resource.data.participants[0])).data.collegeKey == request.resource.data.collegeKey
+        && get(/databases/$(database)/documents/users/$(request.resource.data.participants[1])).data.collegeKey == request.resource.data.collegeKey;
       allow get, list: if signedIn() && request.auth.uid in resource.data.participants;
       allow update: if signedIn() && request.auth.uid in resource.data.participants
-        && request.resource.data.participants == resource.data.participants;
+        && request.resource.data.participants == resource.data.participants
+        && (request.resource.data.collegeKey == resource.data.collegeKey
+          || (!('collegeKey' in resource.data.keys())
+            && request.resource.data.collegeKey == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.collegeKey
+            && get(/databases/$(database)/documents/users/$(resource.data.participants[0])).data.collegeKey == request.resource.data.collegeKey
+            && get(/databases/$(database)/documents/users/$(resource.data.participants[1])).data.collegeKey == request.resource.data.collegeKey));
       allow delete: if false;
       match /messages/{messageId} {
         allow read: if signedIn() && request.auth.uid in
           get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
-        allow create: if signedIn()
+        allow create: if verifiedCampusUser()
           && request.resource.data.senderUid == request.auth.uid
           && request.resource.data.text is string
           && request.resource.data.text.size() > 0
           && request.resource.data.text.size() <= 2000
           && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
-        allow update, delete: if false;
+        allow update: if signedIn()
+          && resource.data.senderUid == request.auth.uid
+          && request.resource.data.senderUid == resource.data.senderUid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['text','edited','editedAt'])
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 2000;
+        allow delete: if signedIn() && resource.data.senderUid == request.auth.uid;
       }
     }
 
     // Public listing fields only. Do not put email, phone, student ID or private chat details here.
     // Public listing queries must include where('status', '==', 'active').
     match /listings/{listingId} {
-      allow get, list: if resource.data.status == 'active';
-      allow create: if ownsNewDocument()
+      allow get, list: if signedIn() && resource.data.status == 'active' && resource.data.collegeKey is string && resource.data.collegeKey == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.collegeKey;
+      allow create: if verifiedCampusUser() && ownsNewDocument()
         && validListing(request.resource.data)
-        && request.resource.data.status == 'active';
-      allow update: if ownsCurrentDocument()
+        && request.resource.data.status == 'active'
+        && request.resource.data.collegeKey is string
+        && request.resource.data.collegeKey == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.collegeKey;
+      allow update: if verifiedCampusUser() && ownsCurrentDocument()
         && request.resource.data.ownerUid == resource.data.ownerUid
-        && validListing(request.resource.data);
+        && validListing(request.resource.data)
+        && request.resource.data.collegeKey == resource.data.collegeKey;
       allow delete: if ownsCurrentDocument();
     }
 
     // Looking For requests may be publicly read only while open. Store only a broad location label.
     match /requests/{requestId} {
       allow get, list: if resource.data.status == 'open';
-      allow create: if ownsNewDocument()
+      allow create: if verifiedCampusUser() && ownsNewDocument()
         && request.resource.data.item is string
         && request.resource.data.item.size() > 0
         && request.resource.data.item.size() <= 120
         && request.resource.data.status == 'open';
-      allow update: if ownsCurrentDocument()
+      allow update: if verifiedCampusUser() && ownsCurrentDocument()
         && request.resource.data.ownerUid == resource.data.ownerUid;
       allow delete: if ownsCurrentDocument();
     }
@@ -107,11 +133,11 @@ service cloud.firestore {
     // Keep sensitive identifying details out of publicly readable Lost & Found fields.
     match /lostFound/{reportId} {
       allow get, list: if signedIn() && resource.data.status == 'open';
-      allow create: if ownsNewDocument()
+      allow create: if verifiedCampusUser() && ownsNewDocument()
         && request.resource.data.description is string
         && request.resource.data.description.size() > 0
         && request.resource.data.status == 'open';
-      allow update: if ownsCurrentDocument()
+      allow update: if verifiedCampusUser() && ownsCurrentDocument()
         && request.resource.data.ownerUid == resource.data.ownerUid;
       allow delete: if ownsCurrentDocument();
     }
@@ -123,11 +149,11 @@ service cloud.firestore {
         resource.data.ownerUid == request.auth.uid ||
         (resource.data.access == 'free' && resource.data.status == 'active')
       );
-      allow create: if ownsNewDocument()
+      allow create: if verifiedCampusUser() && ownsNewDocument()
         && request.resource.data.title is string
         && request.resource.data.title.size() > 0
         && request.resource.data.status == 'active';
-      allow update: if ownsCurrentDocument()
+      allow update: if verifiedCampusUser() && ownsCurrentDocument()
         && request.resource.data.ownerUid == resource.data.ownerUid;
       allow delete: if ownsCurrentDocument();
     }
@@ -138,7 +164,7 @@ service cloud.firestore {
         resource.data.senderUid == request.auth.uid ||
         resource.data.recipientUid == request.auth.uid
       );
-      allow create: if signedIn()
+      allow create: if verifiedCampusUser()
         && request.resource.data.senderUid == request.auth.uid
         && request.resource.data.recipientUid is string
         && request.resource.data.recipientUid != request.auth.uid
@@ -157,7 +183,7 @@ service cloud.firestore {
     // Reports remain private to the person who submitted them. Moderation/admin access belongs
     // on a trusted backend, not in a publicly accessible browser rule.
     match /reports/{reportId} {
-      allow create: if signedIn() && request.resource.data.reporterUid == request.auth.uid;
+      allow create: if verifiedCampusUser() && request.resource.data.reporterUid == request.auth.uid;
       allow get, list, update, delete: if signedIn() && resource.data.reporterUid == request.auth.uid;
     }
 

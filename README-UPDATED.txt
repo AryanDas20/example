@@ -1,38 +1,34 @@
-UNITRADE UPDATED PACKAGE — CAMPUS CHAT, STUDENT SEARCH, PROFILE DETAILS
+UNITRADE — UPDATED CAMPUS MARKETPLACE PACKAGE
 
-Files
-- index.html, style.css, script.js: existing UniTrade site with listing deletion and campus-scoped listing support.
-- social.js, social.css: new Firebase-backed student search, direct chat, conversation list, profile completion, and unread message-notification badge.
-- firebase-config.js: existing Firebase web config (browser config, not a server secret).
-- firestore.rules: updated rules for public profile search, private chats/messages, phone number in private user profile, and notification creation.
-- storage.rules and UniTrade-Complete-Website-Guide.pdf: carried forward.
+Included updates
+- Firebase config set to the web app details supplied for project example-fb860. The page loads the Firebase 13.1.0 compatibility SDK to match the existing global Firebase code style.
+- Email/password sign-up and sign-in use Firebase Authentication; password reset uses Firebase email.
+- Sign-up sends an email-verification link. Verified email is required for publishing/contact actions.
+- Phone verification uses Firebase SMS + reCAPTCHA and links the verified phone to the signed-in account.
+- Profile includes name, phone verification, official campus name, short name/acronym, course, department, year, hostel/campus area, city, short bio and optional private student ID.
+- Campus-scoped listing queries use a normalized collegeKey. Firestore rules restrict listing/profile reads to the signed-in user's campus key.
+- Student search is case-insensitive and uses the saved campus acronym/canonical key.
+- Chat layout fixes scrolling, uses a multi-line composer, clears input immediately, and scrolls immediately after send.
+- Sender can edit or delete their own messages; message actions are restricted by Firestore rules.
+- Student profile cards show public details and a chat button; phone, email and student ID are not shown on public profiles.
+- Detailed notification center shows message/product-interest context and sender identity. Phone/email are shown only to the notification recipient.
+- Product cards use category-specific icons and separate category-colored backgrounds.
 
-IMPORTANT SETUP
-1. Back up your current deployment/repository.
-2. Replace website files with the contents of this package and deploy on HTTPS.
-3. In Firebase Console enable Google Authentication and create Cloud Firestore.
-4. Review firestore.rules, publish it in Firebase Console, and test with Firebase Rules Simulator / Emulator before production.
-5. Make sure Firebase Authentication authorized domains include your production hostname.
-6. Open the deployed website, sign in with Google, and complete phone, college, course and year fields.
-7. Create two test accounts with the same college and verify search/chat in two separate browsers.
+IMPORTANT Firebase setup
+1. This package now points to project example-fb860 using the config you supplied. Confirm this is the intended project before deployment.
+2. Firebase Console → Authentication → Sign-in method: enable Email/Password, Google and Phone.
+3. Authentication → Settings → Authorized domains: add localhost and the actual deployed hostname (for the older deployment referenced in the project guide, this is unitradeneo.vercel.app if you still use that domain).
+4. Email verification requires the configured Firebase email template/action URL to be valid. Test delivery and spam placement.
+5. Phone OTP requires billing/usage settings appropriate to Firebase Phone Auth, valid E.164 numbers, reCAPTCHA, and test-phone configuration during development.
+6. Deploy firestore.rules and storage.rules from this package to the same Firebase project. Test them in the Rules Playground/Emulator before production.
+7. Campus listings now require collegeKey. Older listing documents without collegeKey will not appear until migrated. Old chat documents can be upgraded when both participants already have matching campus keys; otherwise test with a new conversation. Do not loosen rules just to show legacy records.
+8. Use the official campus name consistently. Recognised aliases are normalised; the short name is indexed for search. A production deployment should use a centrally managed campus directory rather than free-text campus identity.
+9. Firebase Web API keys are public identifiers, not secrets; security comes from Authentication, Firestore/Storage rules, abuse controls and server-side validation.
 
-New features
-- Find students by name/course/hostel, limited to the selected college.
-- Direct text chat with Firestore realtime message updates.
-- Recent conversations.
-- Unread message count and notification records for incoming messages.
-- Required profile completion for phone, college, course and year.
-- Delete own listings (Firestore ownership rules still apply).
-- Campus filtering for cloud listings when a profile has a college.
-
-Important commercial-launch limitations
-- Phone numbers are stored in the private users/{uid} document and are included in a direct-message notification payload, not in searchable publicProfiles or public listings. The UI explains that phone information is not public. Review privacy consent, retention and applicable Indian privacy law before launch.
-- Message notification badge currently counts unread notification documents. The existing notification modal in the original application remains separate; a full unified notification inbox/read-state workflow should be built and tested before launch.
-- This package does not implement payment processing, escrow, verified student status, push notifications when the site is closed, moderation/admin console, rate limiting, abuse reporting backend, or transactional purchase/order state machine. Do not represent those as completed.
-- Listing campus isolation is a UI query/filter plus public listing reads. For strong campus privacy, use trusted backend logic/custom claims and rules enforcing campus membership; client-side filtering alone is not a security boundary.
-- Existing listing records created before this update may not contain college. Review/migrate them deliberately. Current compatibility filter still shows records with no college; remove that fallback after migrating existing records if strict campus separation is required.
-- Browser Google config is not a service-account key, but it is not sufficient security by itself. Firestore rules and Auth configuration are essential.
-- Firestore message ordering needs a composite index only if the console requests one. Check browser console and Firestore usage during testing.
-- Run tests for account creation, two-user chats, cross-campus search, unauthorized listing deletion, notifications, and profile edits before taking real transactions.
-
-The code was syntax-checked with Node. This does not substitute for testing against your live Firebase project, published rules, real accounts, or deployment.
+Security / commercial readiness caveats
+- The browser cannot guarantee transactional purchases or secure payment settlement. No real payment gateway, escrow, order fulfillment or dispute resolution is included.
+- Phone/email may be present in a recipient's private notification document for direct contact context; review consent, retention, privacy policy and applicable Indian data protection obligations.
+- Email/phone verification does not itself prove a person is a student. Student-ID/institution verification and moderation need a trusted backend/admin workflow.
+- Campus key consistency is still dependent on user-entered campus fields. For strict production isolation, replace free-text campus entry with a server-managed campus directory or trusted custom claims.
+- Test two accounts in separate browsers: email verification, SMS verification, cross-campus listing denial, cross-campus search denial, message send/edit/delete, notification visibility, profile privacy and listing ownership.
+- The code was syntax-checked only; it has not been run against your live Firebase project. Live SMS delivery, rules, domains, database indexes and auth providers must be tested in your project.
