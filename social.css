@@ -3,3 +3,10 @@
 @media(max-width:600px){.social-launchers{right:12px;bottom:12px}.social-panel{right:8px;bottom:70px;width:calc(100vw - 16px);height:min(720px,calc(100vh - 90px))}.profile-setup .field-grid,.student-profile-facts{grid-template-columns:1fr}.student-profile-modal{padding:22px}.phone-code-row{grid-template-columns:1fr}}
 
 .profile-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:18px 0}.profile-detail-grid>div{display:grid;gap:4px;padding:11px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);overflow-wrap:anywhere}.profile-detail-grid small,.profile-detail-grid span{font-size:10px;color:var(--muted)}.profile-detail-grid b{font-size:12px;font-weight:750}@media(max-width:520px){.profile-detail-grid{grid-template-columns:1fr}}
+/* Better actionable Firebase auth feedback */
+.social-toast{max-width:min(560px,calc(100vw - 28px));display:grid;gap:5px;white-space:normal;line-height:1.4;text-align:left;box-sizing:border-box}
+.social-toast strong{font-size:13px}
+.social-toast span{font-size:12px;overflow-wrap:anywhere}
+.social-toast.error{background:#411d2a;border-color:#ff6f88;color:#fff}
+.social-toast.warning{background:#42341a;border-color:#f3c969;color:#fff}
+.social-toast.success{background:#123c35;border-color:#57dc9a;color:#fff}

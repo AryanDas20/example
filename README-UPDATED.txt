@@ -32,3 +32,10 @@ Security / commercial readiness caveats
 - Campus key consistency is still dependent on user-entered campus fields. For strict production isolation, replace free-text campus entry with a server-managed campus directory or trusted custom claims.
 - Test two accounts in separate browsers: email verification, SMS verification, cross-campus listing denial, cross-campus search denial, message send/edit/delete, notification visibility, profile privacy and listing ownership.
 - The code was syntax-checked only; it has not been run against your live Firebase project. Live SMS delivery, rules, domains, database indexes and auth providers must be tested in your project.
+
+SMS ERROR DIAGNOSTICS PATCH (2026-10-25)
+- social.js now shows the Firebase error code and a human-readable cause instead of hiding detail in a one-argument toast.
+- reCAPTCHA is rendered before requesting an SMS, reset after a failed request, and the send button is disabled during the request.
+- Phone errors such as auth/operation-not-allowed, auth/unauthorized-domain, auth/quota-exceeded, auth/too-many-requests, auth/captcha-check-failed and network errors receive targeted guidance. Full error code/message is also logged to DevTools Console.
+- IMPORTANT: JavaScript cannot enable the Phone provider or billing from the client. Before real SMS tests, enable Phone in Firebase Authentication → Sign-in method, add the exact Vercel hostname under Authorized domains, check SMS region policy, and configure the billing/plan required by Firebase. If billing is not enabled, use Firebase fictional test phone numbers for development instead of expecting real SMS delivery.
+- Use only the exact Firebase project whose config is in firebase-config.js. Test SMS on the deployed HTTPS Vercel domain, not an unlisted preview hostname.
