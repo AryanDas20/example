@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#070b14">
+  <meta name="description" content="UniTrade — a premium campus circular marketplace for student-to-student exchange.">
+  <title>UniTrade — Campus Circular Marketplace</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="social.css">
+</head>
+<body>
+  <a class="skip-link" href="#appMain">Skip to content</a>
+  <canvas id="bgCanvas" aria-hidden="true"></canvas>
+  <div class="canvas-overlay" aria-hidden="true"></div>
+  <div class="ambient ambient-a" aria-hidden="true"></div>
+  <div class="ambient ambient-b" aria-hidden="true"></div>
+  <div class="ambient ambient-c" aria-hidden="true"></div>
+  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+  <div id="loader" class="loader-screen" role="status" aria-live="polite">
+    <div class="loader-core">
+      <div class="loader-orbit"><span></span><span></span><span></span></div>
+      <div class="loader-logo">U</div>
+    </div>
+    <div class="loader-copy">
+      <span class="eyebrow">Campus circular commerce</span>
+      <h1>UniTrade</h1>
+      <p id="loaderMessage">Preparing your campus marketplace</p>
+    </div>
+    <div class="loader-track"><span id="loaderProgress"></span></div>
+    <button class="btn btn-ghost" id="skipLoaderBtn">Enter UniTrade</button>
+  </div>
+
+  <header class="site-header" id="siteHeader">
+    <div class="container nav-shell">
+      <a class="brand" href="#home" data-route="home" aria-label="UniTrade home">
+        <span class="logo-mark">U</span>
+        <span class="brand-copy"><b>UniTrade</b><small>Campus circular commerce</small></span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="#home" data-route="home">Home</a>
+        <a href="#marketplace" data-route="marketplace">Marketplace</a>
+        <a href="#requests" data-route="requests">Looking For</a>
+        <a href="#community" data-route="community">Community</a>
+        <a href="#services" data-route="services">Services</a>
+        <a href="#impact" data-route="impact">Impact</a>
+        <a href="#safety" data-route="safety">Safety</a>
+        <a href="#about" data-route="about">About</a>
+        <a href="#guide" data-route="guide">Guide</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="icon-btn" id="themeBtn" aria-label="Toggle appearance" title="Toggle appearance"><span id="themeIcon">◐</span></button>
+        <button class="icon-btn notification-btn" id="notificationsBtn" aria-label="Open notifications" title="Notifications"><span>◔</span><b class="badge-count hidden" id="notificationCount">0</b></button>
+        <span class="nav-user-name" id="navUserName">Guest</span>
+        <div class="auth-quick-actions" id="guestAuthActions">
+          <button class="btn btn-ghost nav-auth-btn" id="navSignInBtn">Sign in</button>
+          <button class="btn btn-primary nav-auth-btn" id="navSignUpBtn">Create account</button>
+        </div>
+        <button class="avatar-btn" id="profileBtn" aria-label="Open profile">GU</button>
+        <button class="menu-btn" id="mobileMenuBtn" aria-label="Open navigation" aria-expanded="false">☰</button>
+      </div>
+    </div>
+
+    <div class="feature-rail" aria-label="Quick feature navigation">
+      <div class="container feature-rail-inner">
+        <span class="rail-label">Quick access</span>
+        <a href="#rent" data-route="rent"><span class="rail-icon">↗</span> Rent & Borrow</a>
+        <a href="#barter" data-route="barter"><span class="rail-icon">⇄</span> Barter</a>
+        <a href="#fair-price" data-route="fair-price"><span class="rail-icon">◇</span> Fair Price</a>
+        <a href="#lost-found" data-route="lost-found"><span class="rail-icon">⌕</span> Lost & Found</a>
+        <a href="#starter-kits" data-route="starter-kits"><span class="rail-icon">▦</span> Starter Kits</a>
+        <a href="#fire-sale" data-route="fire-sale"><span class="rail-icon">✦</span> Fire Sale</a>
+        <a href="#vault" data-route="vault"><span class="rail-icon">▣</span> Digital Vault</a>
+        <a href="#guide" data-route="guide"><span class="rail-icon">▤</span> Product Guide</a>
+      </div>
+    </div>
+
+    <div class="mobile-nav" id="mobileNav" hidden>
+      <div class="mobile-nav-head"><span>Navigate UniTrade</span><button class="icon-btn" id="mobileNavClose">×</button></div>
+      <div class="mobile-nav-links" id="mobileNavLinks"></div>
+    </div>
+  </header>
+
+  <main id="appMain">
+    <!-- HOME -->
+    <section class="page-view" id="view-home" data-view="home">
+      <div class="container">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow"><span class="pulse-dot"></span> Built around student life</div>
+            <h1>Trade smarter.<br><em>Reuse better.</em><br>Live campus-ready.</h1>
+            <p class="hero-sub">UniTrade brings everyday student exchange into one focused campus marketplace — from a calculator before an exam to a full room-clear bundle before semester break.</p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" data-route="marketplace">Explore Marketplace <span>→</span></button>
+              <button class="btn btn-secondary" id="startTourHero">Take the guided tour</button>
+              <div class="hero-account-actions" id="heroAccountActions"><button class="text-btn" id="heroSignInBtn">Sign in</button><span>or</span><button class="text-btn" id="heroSignUpBtn">create your account</button></div>
+            </div>
+            <div class="hero-search glass-panel">
+              <span>⌕</span>
+              <input id="heroSearch" aria-label="Search UniTrade" placeholder="Search calculators, cycles, notes..." autocomplete="off">
+              <kbd>/</kbd>
+            </div>
+            <div class="hero-proof-row">
+              <span><b>Local-first</b><small>Campus discovery</small></span>
+              <span><b>Flexible</b><small>Buy, rent, borrow or swap</small></span>
+              <span><b id="heroStorageState">Local storage</b><small>Cloud sync is not connected yet</small></span>
+            </div>
+          </div>
+
+          <div class="hero-visual">
+            <div class="hero-orbit orbit-one"></div>
+            <div class="hero-orbit orbit-two"></div>
+            <div class="hero-card glass-panel hero-live-card">
+              <div class="hero-card-top"><span class="status-dot live"></span><span>Your UniTrade workspace</span><small id="heroWorkspaceStatus">Waiting for your first action</small></div>
+              <div class="pulse-main"><div><small>Marketplace status</small><h3 id="heroWorkspaceHeadline">Your campus starts here.</h3><span id="heroWorkspaceSub">Create an account to start listing, saving, requesting and exchanging.</span></div><strong id="heroWorkspaceCount">0</strong></div>
+              <div class="pulse-bars hero-zero-bars"><span style="height:18%"></span><span style="height:12%"></span><span style="height:23%"></span><span style="height:16%"></span><span style="height:30%"></span><span style="height:20%"></span><span style="height:27%"></span><span style="height:15%"></span></div>
+              <div class="hero-card-row"><div class="avatar-stack" id="heroAvatarStack"><span>U</span></div><small id="heroActivityText">No marketplace activity yet</small></div>
+              <div class="hero-card-foot"><div><span class="mini-icon cyan">↻</span><div><b id="heroListingsCount">0</b><small>your listings</small></div></div><div><span class="mini-icon violet">♡</span><div><b id="heroSavedCount">0</b><small>saved items</small></div></div></div>
+            </div>
+            <div class="floating-badge badge-a glass-panel"><span class="badge-icon green">+</span><div><b>Start with a listing</b><small>Publish your first campus item</small></div></div>
+            <div class="floating-badge badge-b glass-panel"><span class="badge-icon violet">◌</span><div><b>Saved on this device</b><small>Shared cloud data requires Firebase setup</small></div></div>
+          </div>
+        </div>
+
+        <div class="home-grid">
+          <article class="glass-panel home-intro-card">
+            <div class="section-heading compact"><span class="section-kicker">Why UniTrade</span><h2>One campus, one local layer for the things students actually share.</h2><p>UniTrade is designed around short distances, semester schedules, flexible ownership, and the reality that useful belongings often outlive a single student.</p></div>
+            <div class="insight-grid">
+              <div><span class="insight-number">01</span><b>Find nearby first</b><p>Discover items by hostel, block, campus zone, and handover distance.</p></div>
+              <div><span class="insight-number">02</span><b>Choose the right ownership</b><p>Buy something forever, rent it for a week, borrow it for an exam, or trade it.</p></div>
+              <div><span class="insight-number">03</span><b>Keep value moving</b><p>Help useful products stay in circulation longer and reduce unnecessary replacement.</p></div>
+            </div>
+          </article>
+          <article class="glass-panel campus-pulse-card">
+            <div class="card-topline"><span class="section-kicker">Your Campus Pulse</span><button class="text-btn" data-route="community">Open community →</button></div>
+            <div class="pulse-row"><span class="pulse-ring"><i></i></span><div><b id="homeCommunityCount">0</b><small>your saved interactions</small></div></div>
+            <div class="trend-list" id="homePulseList">
+              <div><span>Listings</span><strong>0</strong></div>
+              <div><span>Requests</span><strong>0</strong></div>
+              <div><span>Saved items</span><strong>0</strong></div>
+            </div>
+            <div class="mini-note">Campus trends become meaningful as you add your own marketplace activity.</div>
+          </article>
+        </div>
+
+        <div class="home-feature-band">
+          <div class="section-heading compact"><span class="section-kicker">Explore the product</span><h2>Every major workflow has <span>its own space.</span></h2><p>Use the navigation to open a dedicated experience instead of scrolling through one oversized dashboard.</p></div>
+          <div class="feature-entry-grid">
+            <button class="feature-entry" data-route="marketplace"><span class="entry-icon cyan">⌕</span><span><b>Marketplace</b><small>Discover, compare and save</small></span><i>→</i></button>
+            <button class="feature-entry" data-route="requests"><span class="entry-icon amber">!</span><span><b>Looking For</b><small>Post a need and attract supply</small></span><i>→</i></button>
+            <button class="feature-entry" data-route="community"><span class="entry-icon green">✦</span><span><b>Community</b><small>Karma, freebies and local pulse</small></span><i>→</i></button>
+            <button class="feature-entry" data-route="services"><span class="entry-icon violet">◈</span><span><b>Smart Services</b><small>Eight easy-to-use campus tools</small></span><i>→</i></button>
+            <button class="feature-entry" data-route="impact"><span class="entry-icon cyan">↻</span><span><b>Impact</b><small>Track reuse and student value</small></span><i>→</i></button>
+            <button class="feature-entry" data-route="safety"><span class="entry-icon amber">◉</span><span><b>Trust & Safety</b><small>Guidance, reports and handover</small></span><i>→</i></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARKETPLACE -->
+    <section class="page-view" id="view-marketplace" data-view="marketplace" hidden>
+      <div class="container">
+        <div class="page-hero">
+          <div><span class="section-kicker">Marketplace</span><h1>Find useful things <span>close to you.</span></h1><p>Search by item, category, transaction mode, hostel block, condition, or proximity. Compare options before starting a conversation.</p></div>
+          <div class="page-actions"><button class="btn btn-primary" id="newListingBtn">＋ New listing</button><button class="btn btn-secondary" data-route="requests">Post what you need</button></div>
+        </div>
+
+        <div class="marketplace-shell glass-panel">
+          <div class="search-command">
+            <span class="search-icon">⌕</span><input id="globalSearch" placeholder="Search anything on UniTrade..." aria-label="Global marketplace search"><button class="clear-search hidden" id="clearSearch" aria-label="Clear search">×</button><span class="search-count" id="searchCount">0 listings</span><button class="filter-chip" id="filterFocusBtn">Filters</button>
+          </div>
+          <div class="filter-row" id="filterRow">
+            <button class="filter-select active" data-filter-mode="all">All</button><button class="filter-select" data-filter-mode="buy">Buy</button><button class="filter-select" data-filter-mode="rent">Rent</button><button class="filter-select" data-filter-mode="borrow">Borrow</button><button class="filter-select" data-filter-mode="free">Free</button><button class="filter-select" data-filter-mode="barter">Barter</button>
+            <select id="categoryFilter" aria-label="Filter by category"><option value="all">All categories</option></select>
+            <select id="conditionFilter" aria-label="Filter by condition"><option value="all">All conditions</option><option>Excellent</option><option>Good</option><option>Fair</option></select>
+            <select id="sortFilter" aria-label="Sort listings"><option value="newest">Newest</option><option value="priceLow">Price low</option><option value="nearest">Nearest</option><option value="impact">Circular value</option></select>
+          </div>
+          <div class="marketplace-meta"><div class="filter-insights"><span id="listingFilterInsight">Showing all campus listings</span><button class="text-btn" id="resetFiltersBtn">Reset</button></div><div class="compare-tray" id="compareTray"><span id="compareTrayText">Select up to two items to compare</span><button id="compareBtn" disabled>Compare</button></div></div>
+        </div>
+
+        <div class="listing-grid" id="listingGrid" aria-live="polite"></div>
+        <div class="empty-state" id="listingEmpty" hidden><div class="empty-icon">⌁</div><h3>No matching listings</h3><p>Try a different search term or broaden the transaction filters.</p><button class="btn btn-secondary" id="resetFiltersEmpty">Reset filters</button></div>
+      </div>
+    </section>
+
+    <!-- REQUESTS -->
+    <section class="page-view" id="view-requests" data-view="requests" hidden>
+      <div class="container">
+        <div class="page-hero split-hero">
+          <div><span class="section-kicker">Looking For</span><h1>Post demand before you <span>start searching.</span></h1><p>Tell your campus what you need, where you need it, and how you want to get it. Nearby students can respond without you repeatedly checking listings.</p></div>
+          <button class="btn btn-primary" id="requestPageBtn">＋ Create request</button>
+        </div>
+        <div class="story-grid">
+          <article class="glass-panel explainer-card"><span class="step-orb">01</span><h3>Describe the need</h3><p>Give people enough context to recognise the item and understand your deadline.</p></article>
+          <article class="glass-panel explainer-card"><span class="step-orb">02</span><h3>Set your constraints</h3><p>Add a budget, hostel block, required date, and preferred transaction mode.</p></article>
+          <article class="glass-panel explainer-card"><span class="step-orb">03</span><h3>Let supply come to you</h3><p>Your request becomes a discoverable demand signal for sellers and borrowers.</p></article>
+        </div>
+        <div class="section-heading split"><div><span class="section-kicker">Open requests</span><h2>What students are asking for</h2></div><div class="request-stat glass-panel"><b id="requestCount">0</b><span>active requests</span></div></div>
+        <div class="request-list" id="requestList"></div>
+      </div>
+    </section>
+
+    <!-- COMMUNITY -->
+    <section class="page-view" id="view-community" data-view="community" hidden>
+      <div class="container">
+        <div class="page-hero"><div><span class="section-kicker">Community</span><h1>Make reuse feel <span>social.</span></h1><p>UniTrade turns useful exchanges into a campus community layer with Karma, Zero-Rupee Drops, local demand signals, and reusable item stories.</p></div><button class="btn btn-primary" id="freebieBtn">Give something away</button></div>
+        <div class="community-grid">
+          <article class="karma-card glass-panel" id="karmaCard">
+            <div class="karma-head"><div><span class="section-kicker">Campus Karma</span><h2 id="karmaCardPoints">0</h2><span id="karmaLevel">New member</span></div><div class="karma-orb">✦</div></div>
+            <div class="karma-progress"><span id="karmaProgressBar" style="width:0%"></span></div>
+            <p id="karmaNextText">Create a helpful listing or request to start earning Karma.</p>
+            <div class="badge-row"><span>Helpful Neighbor</span><span>Campus Contributor</span><span>Circular Champion</span></div>
+          </article>
+          <article class="glass-panel giveaway-card"><div class="card-topline"><span class="section-kicker">Zero-Rupee Drops</span><span class="tiny-label">Community giving</span></div><h3>Free items should be easy to find.</h3><p>Use the Free mode for hangers, buckets, curtains, books, stationery, storage boxes, or any useful item that still has life left in it.</p><button class="btn btn-secondary" data-filter-free>Browse free items</button></article>
+        </div>
+        <div class="community-lower-grid">
+          <article class="glass-panel leaderboard-card"><div class="section-heading compact"><span class="section-kicker">Karma leaderboard</span><h2>Contributors shaping the culture.</h2></div><div class="leaderboard" id="leaderboard"></div></article>
+          <article class="glass-panel pulse-card"><div class="section-heading compact"><span class="section-kicker">Campus Pulse</span><h2>What is moving this week?</h2></div><div class="trend-bars" id="communityTrendBars"><div><span>Listings</span><i><b style="width:0%"></b></i><strong>0</strong></div><div><span>Requests</span><i><b style="width:0%"></b></i><strong>0</strong></div><div><span>Saved items</span><i><b style="width:0%"></b></i><strong>0</strong></div><div><span>Vault resources</span><i><b style="width:0%"></b></i><strong>0</strong></div></div><p class="mini-note">These indicators update from activity created by users on this device.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="page-view" id="view-services" data-view="services" hidden>
+      <div class="container">
+        <div class="page-hero"><div><span class="section-kicker">Smart services</span><h1>Eight simple tools for <span>campus life.</span></h1><p>UniTrade is more than a marketplace. Each service solves one specific campus problem and opens in its own focused workspace.</p></div><button class="btn btn-secondary" id="serviceTourBtn">Tour these tools</button></div>
+        <div class="service-grid">
+          <button class="service-card glass-panel" data-route="rent"><span class="service-icon cyan">↗</span><div><span class="service-index">01</span><h3>Rent & Borrow</h3><p>Use useful gear for the exact period you need it.</p><span class="service-link">Open workspace →</span></div></button>
+          <button class="service-card glass-panel" data-route="barter"><span class="service-icon violet">⇄</span><div><span class="service-index">02</span><h3>Barter & Trade</h3><p>Swap items with a structured offer and message.</p><span class="service-link">Open workspace →</span></div></button>
+          <button class="service-card glass-panel" data-route="fair-price"><span class="service-icon amber">◇</span><div><span class="service-index">03</span><h3>Fair Price</h3><p>Get a transparent resale range from item age, condition, and demand.</p><span class="service-link">Calculate a range →</span></div></button>
+          <button class="service-card glass-panel" data-route="lost-found"><span class="service-icon cyan">⌕</span><div><span class="service-index">04</span><h3>Lost & Found</h3><p>Rank possible matches from description, place, colour, and date.</p><span class="service-link">Match a report →</span></div></button>
+          <button class="service-card glass-panel" data-route="starter-kits"><span class="service-icon green">▦</span><div><span class="service-index">05</span><h3>Starter Kits</h3><p>Bundle several useful items into one faster purchase.</p><span class="service-link">Build a kit →</span></div></button>
+          <button class="service-card glass-panel" data-route="fire-sale"><span class="service-icon magenta">✦</span><div><span class="service-index">06</span><h3>Fire Sale</h3><p>Clear a room faster before semester transitions.</p><span class="service-link">See urgent deals →</span></div></button>
+          <button class="service-card glass-panel" data-route="vacation-hold"><span class="service-icon violet">⌂</span><div><span class="service-index">07</span><h3>Vacation Hold</h3><p>Store cycles, mattresses, luggage, and appliances locally.</p><span class="service-link">Find a hold option →</span></div></button>
+          <button class="service-card glass-panel" data-route="vault"><span class="service-icon cyan">▣</span><div><span class="service-index">08</span><h3>Digital Vault</h3><p>Share authorised notes, study guides, and revision resources.</p><span class="service-link">Open vault →</span></div></button>
+        </div>
+        <div class="service-callout glass-panel"><div class="callout-icon">◎</div><div><span class="section-kicker">Easy by design</span><h3>One task per screen.</h3><p>Each UniTrade service is deliberately focused. Open the tool, understand what it does, complete the action, and return to where you were.</p></div><button class="btn btn-primary" data-route="marketplace">Back to marketplace</button></div>
+      </div>
+    </section>
+
+    <!-- SERVICE VIEWS -->
+    <section class="page-view feature-view" id="view-rent" data-view="rent" hidden><div class="container"><div class="page-hero"><div><span class="section-kicker">Service 01 · Rent & Borrow</span><h1>Use it for as long as you <span>actually need it.</span></h1><p>Choose a short rental, a longer weekly period, or a free borrowing arrangement. Keep the handover, return deadline, and condition expectations visible.</p></div><button class="btn btn-secondary" data-route="services">← All services</button></div><div class="tool-layout"><article class="glass-panel tool-form-card"><div class="tool-title"><span class="service-icon cyan">↗</span><div><h2>Choose a plan</h2><p>Pick a simple access model.</p></div></div><div class="option-grid" id="rentOptions"><button class="tool-option active" data-rent-period="daily"><b>Daily</b><small>For exams, events or short projects</small><strong>Set price when listing</strong></button><button class="tool-option" data-rent-period="weekly"><b>Weekly</b><small>For longer project access</small><strong>Set price when listing</strong></button><button class="tool-option" data-rent-period="borrow"><b>Borrow</b><small>Community handover without a sale</small><strong>Free to arrange</strong></button></div><div class="field-grid"><label>Return date<input type="date" id="rentReturnDate"></label><label>Deposit<input type="number" id="rentDeposit" min="0" value="0"></label></div><label>Handover note<textarea id="rentNote" rows="4" placeholder="Example: Meet outside the library security desk at 5 PM."></textarea></label><button class="btn btn-primary" id="saveRentPlan">Save access plan</button></article><aside class="glass-panel info-rail-card"><span class="section-kicker">How it works</span><ol class="numbered-list"><li><b>Choose the period.</b><span>Short access keeps useful products circulating instead of becoming one-time purchases.</span></li><li><b>Agree on the handover.</b><span>Use a visible campus location and record the item condition.</span></li><li><b>Return on time.</b><span>Keep the agreed return date and any deposit conditions visible.</span></li></ol></aside></div></div></section>
+
+    <section class="page-view feature-view" id="view-barter" data-view="barter" hidden><div class="container"><div class="page-hero"><div><span class="section-kicker">Service 02 · Barter & Trade</span><h1>Turn something you own into <span>something you need.</span></h1><p>Choose your listing, choose another listing, and send a clear trade offer with optional cash adjustment.</p></div><button class="btn btn-secondary" data-route="services">← All services</button></div><div class="tool-layout"><article class="glass-panel tool-form-card"><div class="tool-title"><span class="service-icon violet">⇄</span><div><h2>Create a trade offer</h2><p>Your offer is saved in your account activity.</p></div></div><div class="field-grid"><label>Your listing<select id="tradeMine"></select></label><label>Target listing<select id="tradeTarget"></select></label></div><label>Offer message<textarea id="tradeMessage" rows="4" placeholder="I can trade my study table and add ₹200."></textarea></label><div class="trade-summary" id="tradeSummary"><span>Offer value</span><strong>Choose listings</strong></div><button class="btn btn-primary" id="submitTradeBtn">Send trade request</button></article><aside class="glass-panel info-rail-card"><span class="section-kicker">Trade hygiene</span><ul class="clean-list"><li>Describe exactly what you are offering.</li><li>Clarify condition before meeting.</li><li>Use a visible campus handover point.</li><li>Keep the agreed exchange inside the platform history.</li></ul></aside></div><div class="history-panel glass-panel"><div class="section-heading compact"><span class="section-kicker">Your trade history</span><h2>Recent offers</h2></div><div id="tradeHistory"></div></div></div></section>
+
+    <section class="page-view feature-view" id="view-fair-price" data-view="fair-price" hidden><div class="container"><div class="page-hero"><div><span class="section-kicker">Service 03 · Fair Price</span><h1>Price your item with a little more <span>confidence.</span></h1><p>Get a transparent estimated resale range based on original price, age, condition, category, and campus demand.</p></div><button class="btn btn-secondary" data-route="services">← All services</button></div><div class="tool-layout"><article class="glass-panel tool-form-card"><div class="tool-title"><span class="service-icon amber">◇</span><div><h2>Price estimator</h2><p>The result is a suggestion, not a guaranteed market value.</p></div></div><form id="fairPriceForm" class="inline-form"><div class="field-grid"><label>Original price<input name="price" type="number" min="0" required placeholder="2400"></label><label>Age<input name="age" type="number" min="0" step="0.5" required placeholder="1.5"></label></div><div class="field-grid"><label>Condition<select name="condition"><option>Excellent</option><option selected>Good</option><option>Fair</option></select></label><label>Demand<select name="demand"><option>Low</option><option selected>Medium</option><option>High</option></select></label></div><label>Category<select name="category"><option>Academics</option><option>Electronics</option><option>Furniture</option><option>Hostel Essentials</option><option>Transportation</option><option>Lab Equipment</option></select></label><button class="btn btn-primary" type="submit">Calculate estimate</button></form></article><aside class="glass-panel result-card" id="fairPriceResult"><span class="section-kicker">Result</span><h2>Ready when you are.</h2><p>Enter a few simple details to see a suggested campus resale range.</p></aside></div></div></section>
+
+    <section class="page-view feature-view" id="view-lost-found" data-view="lost-found" hidden><div class="container"><div class="page-hero"><div><span class="section-kicker">Service 04 · Lost & Found</span><h1>Find a likely match before the <span>trail goes cold.</span></h1><p>Describe a lost or found item and UniTrade will rank stored reports using transparent text and context similarity.</p></div><button class="btn btn-secondary" data-route="services">← All services</button></div><div class="tool-layout"><article class="glass-panel tool-form-card"><div class="segmented" id="lostTypeSwitch"><button class="active" data-report-type="lost">I lost something</button><button data-report-type="found">I found something</button></div><form id="lostForm"><div class="field-grid"><label>Description<input name="description" required placeholder="Black Fastrack watch"></label><label>Colour<input name="color" placeholder="Black"></label></div><div class="field-grid"><label>Location<input name="location" required placeholder="Library bench"></label><label>Date<input name="date" type="date"></label></div><label>Category<select name="category"><option>Accessories</option><option>Academics</option><option>Electronics</option><option>Hostel</option><option>Other</option></select></label><button class="btn btn-primary" type="submit">Find matching reports</button></form></article><aside class="glass-panel info-rail-card"><span class="section-kicker">Matching logic</span><div class="match-meter"><span id="matchMeterFill"></span></div><p id="matchExplanation">The matcher compares item language, colour, place, and context. Results are suggestions only.</p></aside></div><div class="match-stack" id="matchStack"></div></div></section>
+
+    <section class="page-view feature-view" id="view-starter-kits" data-view="starter-kits" hidden><div class="container"><div class="page-hero"><div><span class="section-kicker">Service 05 · Starter Kits</span><h1>Buy a semester in <span>one smart bundle.</span></h1><p>Useful bundles reduce the number of separate handovers and help graduating students clear several items at once.</p></div><button class="btn btn-secondary" data-route="services">← All services</button></div><div class="bundle-spotlight glass-panel"><div class="bundle-copy"><span class="section-kicker">Build from your listings</span><h2>Create a useful bundle from items you already own.</h2><p>Starter Kits stay empty until you have listings to group. This keeps the product clean and ensures every bundle reflects real inventory created by users.</p><div class="bundle-metrics"><span><b id="bundleSourceCount">0</b><small>your listings</small></span><span><b id="bundleEligibleCount">0</b><small>items eligible</small></span><span><b id="bundlePotentialSaving">₹0</b><small>potential saving</small></span></div><button class="btn btn-primary" id="bundleSaveBtn" data-route="marketplace">Open Marketplace</button></div><div class="bundle-visual"><div class="bundle-stack"><span>Your items</span><span>Group them</span><span>Set a bundle price</span><span>Save time</span><span>Share locally</span></div></div></div><div class="bundle-grid" id="bundleGrid"></div></div></section>
+
+    <section class="page-view feature-view" id="view-fire-sale" data-view="fire-sale" hidden><div class="container"><div class="page-hero"><div><span class="section-kicker">Service 06 · Fire Sale</span><h1>Clear a room before the <span>semester turns.</span></h1><p>Urgent pricing, room-clear bundles, and free pickup make end-of-semester transitions easier.</p></div><button class="btn btn-secondary" data-route="marketplace">Browse all listings</button></div><div class="fire-sale-banner glass-panel"><div><span class="section-kicker">Semester transition window</span><h2>Price drops are live for <span id="fireCountdown">07:18:42</span></h2><p>Watch this space for items tagged for quick handover. Price-drop alerts are stored locally.</p></div><button class="btn btn-primary" id="fireNotifyBtn">Notify me about price drops</button></div><div class="listing-grid" id="fireSaleGrid"></div></div></section>
+
+    <section class="page-view feature-view" id="view-vacation-hold" data-view="vacation-hold" hidden><div class="container"><div class="page-hero"><div><span class="section-kicker">Service 07 · Vacation Hold</span><h1>Keep heavy stuff close while <span>you travel.</span></h1><p>Find or offer short-term storage for cycles, mattresses, luggage, appliances, and other campus essentials.</p></div><button class="btn btn-secondary" data-route="services">← All services</button></div><div class="storage-grid"><article class="glass-panel storage-card"><span class="storage-icon">⌂</span><h3>Offer a storage hold</h3><p>Create a storage entry with duration, capacity, location and your own pricing terms.</p><div><b>Set your rate</b><small>Choose your campus area</small></div><button class="btn btn-secondary" data-storage-action="Create storage hold">Create hold</button></article><article class="glass-panel storage-card"><span class="storage-icon">▥</span><h3>Request storage</h3><p>Record what you need stored and when you will return for it.</p><div><b>Set your dates</b><small>Agree the handover</small></div><button class="btn btn-secondary" data-storage-action="Request storage">Request storage</button></article><article class="glass-panel storage-card"><span class="storage-icon">▣</span><h3>Storage checklist</h3><p>Keep condition, dates, responsibility and pickup evidence attached to every hold.</p><div><b>Clear terms</b><small>Visible before handover</small></div><button class="btn btn-secondary" data-storage-action="Open checklist">Open checklist</button></article></div><div class="glass-panel checklist-card"><div><span class="section-kicker">Handover checklist</span><h3>Keep storage expectations simple.</h3><p>Record condition, storage period, contact details, and pickup evidence before leaving the item.</p></div><ul class="check-list"><li>Condition noted</li><li>Storage dates confirmed</li><li>Pickup window agreed</li><li>Damage reporting route understood</li></ul></div></div></section>
+
+    <section class="page-view feature-view" id="view-vault" data-view="vault" hidden><div class="container"><div class="page-hero"><div><span class="section-kicker">Service 08 · Digital Vault</span><h1>Keep good notes in the <span>campus knowledge loop.</span></h1><p>Organise authorised revision notes, guides, lab manuals, and previous papers by subject and semester.</p></div><button class="btn btn-primary" id="vaultUploadBtn">＋ Add resource</button></div><div class="vault-toolbar glass-panel"><div class="search-command"><span>⌕</span><input id="vaultSearch" placeholder="Search subjects, notes, semesters..." aria-label="Search Digital Vault"></div><div class="vault-tags"><button class="filter-select active" data-vault-filter="all">All</button><button class="filter-select" data-vault-filter="free">Free</button><button class="filter-select" data-vault-filter="paid">Paid</button></div></div><div class="vault-grid" id="vaultGrid"></div><div class="vault-note glass-panel"><b>Sharing standard</b><p>Only upload materials you own or are authorised to share. UniTrade should not be used to distribute copyrighted textbooks or unauthorised academic material.</p></div></div></section>
+
+    <!-- IMPACT -->
+    <section class="page-view" id="view-impact" data-view="impact" hidden>
+      <div class="container">
+        <div class="page-hero"><div><span class="section-kicker">Campus impact</span><h1>Measure the value of <span>reuse.</span></h1><p>Track marketplace activity and translate it into understandable indicators of student value and circular use. Environmental values are estimates, not verified measurements.</p></div><button class="btn btn-secondary" data-route="marketplace">Add more activity</button></div>
+        <div class="impact-hero glass-panel"><div class="impact-copy"><span class="section-kicker">Your local footprint</span><h2 id="impactHeadline">Your impact story starts at zero.</h2><p>These metrics update from the activity you create on this device and are presented as estimates. They are not independently verified environmental measurements.</p></div><div class="impact-orb"><span id="impactOrbValue">0</span><small>reuse events</small></div></div>
+        <div class="impact-grid"><article><span class="metric-icon cyan">₹</span><b id="impactSavings">₹0</b><small>estimated student savings</small></article><article><span class="metric-icon green">↻</span><b id="impactReused">0</b><small>items reused</small></article><article><span class="metric-icon amber">◎</span><b id="impactFree">0</b><small>free items shared</small></article><article><span class="metric-icon violet">▣</span><b id="impactWaste">0 kg</b><small>estimated material avoided</small></article><article><span class="metric-icon magenta">◉</span><b id="impactStudents">0</b><small>students connected</small></article><article><span class="metric-icon cyan">⌁</span><b id="impactListings">0</b><small>active listings</small></article></div>
+        <div class="impact-detail-grid"><article class="glass-panel impact-card"><span class="section-kicker">How the numbers are built</span><h3>Transparent assumptions</h3><ul class="clean-list"><li>Student savings: difference between stored original and sale price.</li><li>Reuse events: completed or actively shared marketplace items.</li><li>Material avoided: conservative per-category weight assumptions.</li><li>Carbon estimates should only be added when a documented methodology is defined.</li></ul></article><article class="glass-panel impact-card"><span class="section-kicker">Campus story</span><h3>From unused to useful.</h3><p>Every cycle, appliance, book, calculator, or piece of furniture that finds a second user can delay a new purchase and help another student start sooner.</p><button class="btn btn-secondary" data-route="about">Read the product story</button></article></div>
+      </div>
+    </section>
+
+    <!-- SAFETY -->
+    <section class="page-view" id="view-safety" data-view="safety" hidden>
+      <div class="container">
+        <div class="page-hero"><div><span class="section-kicker">Trust & Safety</span><h1>Good marketplaces make <span>safe choices easier.</span></h1><p>UniTrade is designed with practical safety workflows for identity, handover, reporting, and responsible communication. It does not guarantee that every transaction is safe.</p></div><button class="btn btn-primary" id="reportSafetyBtn">Report an issue</button></div>
+        <div class="safety-grid"><article class="safety-card glass-panel"><span class="safety-number">01</span><h3>Meet visibly</h3><p>Choose well-known campus locations, reception areas, libraries, security desks, or other visible places.</p></article><article class="safety-card glass-panel"><span class="safety-number">02</span><h3>Inspect first</h3><p>Check condition, accessories, serial details, and functionality before payment or handover.</p></article><article class="safety-card glass-panel"><span class="safety-number">03</span><h3>Protect credentials</h3><p>Never share passwords, OTPs, card details, or private authentication information with another user.</p></article><article class="safety-card glass-panel"><span class="safety-number">04</span><h3>Keep a record</h3><p>Use in-app messages and keep a clear record of agreed price, condition, return date, and handover terms.</p></article><article class="safety-card glass-panel"><span class="safety-number">05</span><h3>Report concerns</h3><p>Use the reporting workflow for misleading descriptions, unsafe behaviour, spam, restricted goods, or academic-integrity issues.</p></article><article class="safety-card glass-panel"><span class="safety-number">06</span><h3>Escalate when needed</h3><p>If a situation becomes unsafe, stop the exchange and contact the appropriate campus authority or emergency service.</p></article></div>
+        <div class="glass-panel safety-banner"><div><span class="section-kicker">Product principle</span><h3>Trust should be supported by process, not promised by slogans.</h3><p>As UniTrade grows, secure authentication, moderation, audit logs, rate limits, protected messaging, and payment controls should be moved server-side.</p></div><button class="btn btn-secondary" data-route="about">See future architecture</button></div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="page-view" id="view-about" data-view="about" hidden>
+      <div class="container">
+        <div class="page-hero"><div><span class="section-kicker">About UniTrade</span><h1>A campus marketplace built around <span>real student habits.</span></h1><p>Students frequently need the same categories of products for only part of their academic journey. UniTrade creates a local layer for finding, sharing, renting, storing, and reusing those resources.</p></div><button class="btn btn-secondary" id="aboutTourBtn">Tour the whole product</button></div>
+        <div class="about-grid"><article class="glass-panel about-feature"><span class="section-kicker">Objective</span><h2>Make local exchange the default.</h2><p>Give students one focused place to discover useful items before buying new ones, while making it easier for senior students to recover value from belongings they no longer need.</p></article><article class="glass-panel about-feature"><span class="section-kicker">Problem</span><h2>General marketplaces are not campus-shaped.</h2><p>Distance, shipping, unknown contacts, weak local context, and limited rental or borrowing workflows add friction to transactions that are naturally short-range.</p></article><article class="glass-panel about-feature"><span class="section-kicker">Solution</span><h2>Context beats generic reach.</h2><p>UniTrade places hostel blocks, campus zones, handover locations, student schedules, and flexible transaction modes at the centre of discovery.</p></article><article class="glass-panel about-feature"><span class="section-kicker">Sustainability</span><h2>Keep useful products useful longer.</h2><p>The circular value comes from extending product life, increasing access to lower-cost goods, and making reuse easier to see and act on.</p></article></div>
+        <div class="roadmap glass-panel"><div class="section-heading compact"><span class="section-kicker">Roadmap</span><h2>Local today. Connected tomorrow.</h2></div><div class="timeline"><div><span>01</span><b>Local-first frontend</b><p>Fast campus browsing, local persistence, and useful workflows.</p></div><div><span>02</span><b>Secure backend</b><p>Protected accounts, server validation, storage, moderation, and cross-device sync.</p></div><div><span>03</span><b>Campus intelligence</b><p>Better demand forecasting, image-aware matching, smarter pricing, and notification systems.</p></div><div><span>04</span><b>Campus network</b><p>Institutional integrations, campus administration, and verified community services.</p></div></div></div>
+        <div class="stacked-copy"><article><span class="section-kicker">Technology direction</span><h2>Simple frontend now, clean backend boundary later.</h2><p>The current interface keeps state behind reusable JavaScript functions so localStorage can later be replaced by an API layer. Authentication, file storage, chat, notifications, payments, moderation, and analytics should move to secure server-side services as the product expands.</p></article><article><span class="section-kicker">Trust & safety</span><h2>Honest by design.</h2><p>UniTrade is built to help people make safer decisions through process, not guarantees. Identity verification, protected messaging, reporting, secure payments, and moderation are backend responsibilities once the service is connected to a production stack.</p></article></div>
+      </div>
+    </section>
+
+    <!-- CONTRIBUTORS -->
+    <section class="page-view" id="view-contributors" data-view="contributors" hidden>
+      <div class="container">
+        <div class="page-hero"><div><span class="section-kicker">About the makers</span><h1>The people who made <span>UniTrade.</span></h1><p>Meet the people currently credited with building UniTrade. Additional contributor profiles can be added when their names and links are confirmed.</p></div><button class="btn btn-secondary" data-route="guide">Open product guide</button></div>
+        <div class="contributors-grid four-makers">
+          <article class="contributor-card glass-panel"><div class="contributor-avatar initials-only"><span>AD</span></div><span class="section-kicker">Product & Frontend</span><h2>Aryan Das</h2><p>Works on product direction, interface systems, frontend engineering, and the experience that connects student needs to useful campus workflows.</p><div class="skill-row"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>Product</span></div><div class="contributor-actions"><button class="btn btn-secondary" disabled>LinkedIn</button><button class="btn btn-secondary" disabled>GitHub</button></div></article>
+          <article class="contributor-card glass-panel"><div class="contributor-avatar initials-only"><span>CS</span></div><span class="section-kicker">Engineering & Testing</span><h2>Chandan Singh</h2><p>Contributes to engineering, testing, documentation, and collaborative execution across the UniTrade product experience.</p><div class="skill-row"><span>Development</span><span>Testing</span><span>Documentation</span></div><div class="contributor-actions"><button class="btn btn-secondary" disabled>LinkedIn</button><button class="btn btn-secondary" disabled>GitHub</button></div></article>
+        </div>
+      </div>
+    </section>
+    <!-- PRODUCT GUIDE -->
+    <section class="page-view" id="view-guide" data-view="guide" hidden>
+      <div class="container">
+        <div class="page-hero guide-hero"><div><span class="section-kicker">UniTrade Product Guide</span><h1>Everything about UniTrade, <span>in one readable guide.</span></h1><p>Understand the marketplace, account flows, feature architecture, safety model, local data storage, and the path to a secure backend. The PDF is designed as a product handbook with visual explanations.</p></div><a class="btn btn-primary" href="UniTrade-Complete-Website-Guide.pdf" download>Download PDF guide ↗</a></div>
+        <div class="guide-grid">
+          <article class="glass-panel guide-card guide-card-feature"><div class="guide-visual visual-orbit"><span class="orbit-dot"></span><span class="orbit-dot two"></span><span class="orbit-core">U</span></div><span class="section-kicker">01 · Product</span><h2>A campus-first exchange layer.</h2><p>UniTrade brings discovery, ownership, sharing, storage, and community workflows into one campus-focused product so students can find useful things without leaving their local environment.</p></article>
+          <article class="glass-panel guide-card"><span class="section-kicker">02 · Accounts</span><h2>Built for personal user accounts.</h2><p>Create an account, sign back in, manage your profile, and keep marketplace activity connected to your account while the current data layer remains local to the browser.</p><div class="guide-stat-row"><span><b>Local</b><small>Current data layer</small></span><span><b>Ready</b><small>Backend boundary</small></span></div></article>
+          <article class="glass-panel guide-card"><span class="section-kicker">03 · Marketplace</span><h2>Every listing starts with the user.</h2><p>The marketplace begins empty and grows from real listings students create.</p><button class="btn btn-secondary" data-route="marketplace">Open Marketplace</button></article>
+          <article class="glass-panel guide-card"><span class="section-kicker">04 · Safety</span><h2>Process instead of promises.</h2><p>Reporting, safe handovers, responsible communication, and clear transaction expectations are built into the experience without claiming risk-free transactions.</p><button class="btn btn-secondary" data-route="safety">Open Safety Center</button></article>
+          <article class="glass-panel guide-card"><span class="section-kicker">05 · Product intelligence</span><h2>Useful tools around the core marketplace.</h2><p>Price estimation, Lost & Found matching, starter kits, Fire Sale discovery, rental planning, digital resources, barter, and storage are separate workspaces so each task stays focused.</p><button class="btn btn-secondary" data-route="services">Explore Services</button></article>
+          <article class="glass-panel guide-card"><span class="section-kicker">06 · Future-ready</span><h2>Local today. Secure tomorrow.</h2><p>The current browser data layer can later be replaced by secure authentication, a database, storage, realtime chat, payments, notifications, moderation, analytics, and campus administration.</p></article>
+        </div>
+        <div class="guide-download glass-panel"><div><span class="section-kicker">Detailed handbook</span><h2>Read the complete UniTrade guide.</h2><p>The downloadable PDF includes feature explanations, user flows, product structure, safety principles, data architecture, and visual diagrams that explain how the website works.</p></div><a class="btn btn-primary" href="UniTrade-Complete-Website-Guide.pdf" download>Download UniTrade PDF</a></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer"><div class="container footer-grid"><div><a class="brand" href="#home" data-route="home"><span class="logo-mark">U</span><span class="brand-copy"><b>UniTrade</b><small>Campus circular commerce</small></span></a><p>Useful things should have more than one owner.</p></div><div><span class="footer-title">Explore</span><a href="#marketplace" data-route="marketplace">Marketplace</a><a href="#requests" data-route="requests">Looking For</a><a href="#services" data-route="services">Services</a><a href="#impact" data-route="impact">Impact</a></div><div><span class="footer-title">Company</span><a href="#about" data-route="about">About</a>
+        <a href="#guide" data-route="guide">Guide</a><a href="#contributors" data-route="contributors">Contributors</a><a href="#safety" data-route="safety">Trust & Safety</a></div><div><span class="footer-title">Utilities</span><button id="shortcutsBtn">Keyboard shortcuts</button><button id="startTourFooter">Website tour</button><button data-route="guide">Product guide</button><button id="settingsFooter">Settings</button></div></div><div class="container footer-bottom"><span>© 2026 UniTrade</span><span>Browser-local storage · Cloud sharing requires Firebase setup</span></div></footer>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+
+  <div class="modal-root" id="modalRoot" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <section class="modal wide auth-modal" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle" hidden>
+      <button class="modal-close" data-close-modal aria-label="Close">×</button>
+      <div class="auth-layout"><div class="auth-side"><span class="section-kicker">UniTrade account</span><h2>Return to your campus workspace.</h2><p>Sign in to access your listings, requests, saves, tools, and personal activity stored on this device.</p><div class="auth-side-points"><span>✓ Your listings stay connected to your account</span><span>✓ Your saved items persist locally</span><span>✓ Your activity is restored after reload</span></div></div><div class="auth-form-pane"><div class="auth-mode-switch"><button class="active" data-auth-mode="login">Sign in</button><button data-auth-mode="signup">Create account</button></div><span class="section-kicker">Welcome back</span><h2 id="loginTitle">Sign in to UniTrade</h2><p>Use the email and password you created for UniTrade on this device.</p><form id="loginForm" hidden><label>Email<input type="email" name="email" required autocomplete="email" placeholder="you@example.com"></label><label>Password<div class="password-wrap"><input type="password" name="password" required autocomplete="current-password" placeholder="Your password"><button type="button" class="password-toggle">Show</button></div></label><div class="form-row-inline"><label class="check-row"><input type="checkbox" name="remember"> Keep me signed in</label><button class="text-btn" type="button" id="forgotBtn">Forgot password?</button></div><button class="btn btn-primary full auth-submit" type="submit">Sign in</button></form><button type="button" id="googleSignInBtn" class="btn btn-primary full">Continue with Google</button><p class="auth-note">Secure sign-in is handled by Firebase Authentication. UniTrade does not store your Google password.</p><p class="switch-copy">Need an account? <button class="text-btn" id="switchToSignup">Create one</button></p></div></div>
+    </section>
+    <section class="modal wide auth-modal" id="signupModal" role="dialog" aria-modal="true" aria-labelledby="signupTitle" hidden>
+      <button class="modal-close" data-close-modal aria-label="Close">×</button>
+      <div class="auth-layout"><div class="auth-side auth-side-signup"><span class="section-kicker">Join your campus marketplace</span><h2>Start with the information students actually need.</h2><p>Your profile powers nearby discovery, safe handover context, and personalised marketplace activity.</p><div class="auth-progress"><span class="auth-progress-fill" id="signupProgress"></span></div><div class="auth-side-points"><span>01 · Create your account</span><span>02 · Add campus details</span><span>03 · Publish your first listing</span></div></div><div class="auth-form-pane"><div class="auth-mode-switch"><button data-auth-mode="login">Sign in</button><button class="active" data-auth-mode="signup">Create account</button></div><span class="section-kicker">Create your profile</span><h2 id="signupTitle">Build your UniTrade account</h2><p>Use real details you are comfortable storing in this browser. You can change your profile later.</p><form id="signupForm" hidden><div class="field-grid"><label>Full name<input name="name" required autocomplete="name" placeholder="Your full name"></label><label>Email<input name="email" type="email" required autocomplete="email" placeholder="name@college.edu"></label></div><div class="field-grid"><label>Password<div class="password-wrap"><input name="password" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"><button type="button" class="password-toggle">Show</button></div></label><label>Confirm password<input name="confirm" type="password" required minlength="8" autocomplete="new-password" placeholder="Re-enter password"></label></div><div class="password-meter" aria-hidden="true"><span id="passwordStrength"></span></div><div class="field-grid"><label>College<input name="college" required placeholder="Your college"></label><label>Course<input name="course" required placeholder="B.Tech CSE"></label></div><div class="field-grid"><label>Year<input name="year" required placeholder="2nd Year"></label><label>Hostel / Block<input name="hostel" required placeholder="Block B"></label></div><label>Student ID <small>(optional)</small><input name="studentId" placeholder="Student ID if you choose to store it"></label><label class="check-row"><input type="checkbox" name="agree" required> I agree to use UniTrade responsibly and follow the Trust & Safety guidance.</label><button class="btn btn-primary full auth-submit" type="submit">Create my account</button></form><button type="button" id="googleSignUpBtn" class="btn btn-primary full">Create account with Google</button><p class="auth-note">Google creates your secure account. Add or update your campus profile after signing in.</p><p class="switch-copy">Already have an account? <button class="text-btn" id="switchToLogin">Sign in</button></p></div></div>
+    </section>
+    <section class="modal wide" id="listingModal" role="dialog" aria-modal="true" aria-labelledby="listingTitle" hidden><button class="modal-close" data-close-modal aria-label="Close">×</button><span class="section-kicker">Marketplace</span><h2 id="listingTitle">Create a listing</h2><form id="listingForm"><div class="field-grid"><label>Title<input name="title" required placeholder="Scientific calculator"></label><label>Price<input name="price" type="number" min="0" required placeholder="650"></label></div><div class="field-grid"><label>Original price<input name="originalPrice" type="number" min="0" placeholder="1200"></label><label>Category<select name="category"><option>Academics</option><option>Electronics</option><option>Furniture</option><option>Hostel Essentials</option><option>Transportation</option><option>Lab Equipment</option><option>Freebies</option><option>Digital Resources</option><option>Other</option></select></label></div><div class="field-grid"><label>Mode<select name="mode"><option value="buy">Buy</option><option value="rent">Rent</option><option value="borrow">Borrow</option><option value="free">Free</option><option value="barter">Barter</option><option value="vacation">Vacation Hold</option></select></label><label>Condition<select name="condition"><option>Excellent</option><option selected>Good</option><option>Fair</option></select></label></div><div class="field-grid"><label>Hostel / Block<input name="hostel" required placeholder="Block B"></label><label>Walking distance<input name="distance" required placeholder="2 min walk"></label></div><label>Description<textarea name="description" rows="4" required placeholder="Describe condition, included accessories, and handover details."></textarea></label><p class="field-help">Listings are stored in Firebase Firestore and shared with other users. Photos require Firebase Storage integration.</p><div class="modal-actions"><button class="btn btn-secondary" type="button" data-close-modal>Cancel</button><button class="btn btn-primary" type="submit">Publish listing</button></div></form></section>
+    <section class="modal wide" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailTitle" hidden><button class="modal-close" data-close-modal aria-label="Close">×</button><div id="detailContent"></div></section>
+    <section class="modal" id="requestModal" role="dialog" aria-modal="true" aria-labelledby="requestTitle" hidden><button class="modal-close" data-close-modal aria-label="Close">×</button><span class="section-kicker">Looking For</span><h2 id="requestTitle">Tell campus what you need.</h2><form id="requestForm"><div class="field-grid"><label>Item<input name="item" required placeholder="Drawing board"></label><label>Budget<input name="budget" type="number" min="0" placeholder="1000"></label></div><div class="field-grid"><label>Required date<input name="date" type="date"></label><label>Hostel / Block<input name="hostel" placeholder="Block B"></label></div><label>Transaction preference<select name="preference"><option>Buy</option><option>Rent</option><option>Borrow</option><option>Free</option></select></label><label>Description<textarea name="description" rows="3" required></textarea></label><button class="btn btn-primary full" type="submit">Publish request</button></form></section>
+    <section class="modal" id="notificationModal" role="dialog" aria-modal="true" aria-labelledby="notificationTitle" hidden><button class="modal-close" data-close-modal aria-label="Close">×</button><span class="section-kicker">Inbox</span><h2 id="notificationTitle">Notifications</h2><div class="notification-list" id="notificationList"></div></section>
+    <section class="modal" id="profileModal" role="dialog" aria-modal="true" aria-labelledby="profileTitle" hidden><button class="modal-close" data-close-modal aria-label="Close">×</button><div class="profile-head"><div class="avatar-xl" id="profileAvatar">GU</div><div><span class="section-kicker">Account</span><h2 id="profileTitle">Guest User</h2><p id="profileCollege">Local profile</p></div></div><div class="profile-stats"><div><b id="profileKarma">0</b><small>Karma</small></div><div><b id="profileListings">0</b><small>Listings</small></div><div><b id="profileSaved">0</b><small>Saved</small></div></div><div class="profile-actions"><button class="btn btn-secondary" id="editProfileBtn">Edit account</button><button class="btn btn-secondary" id="settingsBtn">Settings</button><button class="btn btn-primary" id="logoutBtn">Log out</button></div></section>
+    <section class="modal wide" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" hidden><button class="modal-close" data-close-modal aria-label="Close">×</button><span class="section-kicker">Settings</span><h2 id="settingsTitle">Make UniTrade feel like yours.</h2><div class="settings-grid"><label class="settings-toggle"><span><b>Compact marketplace cards</b><small>Fit more items on a screen.</small></span><input type="checkbox" id="compactCards"></label><label class="settings-toggle"><span><b>Saved search alerts</b><small>Keep alerts for demand that matches your searches.</small></span><input type="checkbox" id="savedAlerts"></label><label class="settings-toggle"><span><b>Reduced motion</b><small>Reduce non-essential movement and transitions.</small></span><input type="checkbox" id="reducedMotion"></label></div><div class="disclaimer"><b>Local-first storage</b><span>Your theme and interface preferences stay on this device. Firebase stores your account profile and shared marketplace records.</span></div><button class="btn btn-danger" id="settingsClearBtn">Clear UniTrade local data</button></section>
+    <section class="modal wide" id="shortcutsModal" role="dialog" aria-modal="true" aria-labelledby="shortcutsTitle" hidden><button class="modal-close" data-close-modal aria-label="Close">×</button><span class="section-kicker">Keyboard</span><h2 id="shortcutsTitle">Shortcuts that stay out of your way.</h2><div class="shortcut-list" id="shortcutList"></div></section>
+    <section class="modal wide" id="tourModal" role="dialog" aria-modal="true" aria-labelledby="tourTitle" hidden><button class="modal-close" id="tourCloseBtn" aria-label="Close tour">×</button><div class="tour-progress"><span id="tourProgressBar"></span></div><span class="section-kicker">Guided product tour</span><div class="tour-step-count" id="tourStepCount">Step 1 of 24</div><h2 id="tourTitle">Welcome to UniTrade</h2><p id="tourDescription"></p><div class="tour-preview" id="tourPreview"><span id="tourPreviewLabel">Navigation</span><strong id="tourPreviewValue">Your campus workspace</strong><small id="tourPreviewHint">This preview follows the real part of the website you are learning about.</small></div><div class="tour-actions"><button class="btn btn-secondary" id="tourSkipBtn">Skip tour</button><div><button class="btn btn-secondary" id="tourPrevBtn">← Previous</button><button class="btn btn-primary" id="tourNextBtn">Next →</button></div></div></section>
+    <section class="modal" id="safetyModal" role="dialog" aria-modal="true" aria-labelledby="safetyTitle" hidden><button class="modal-close" data-close-modal aria-label="Close">×</button><span class="section-kicker">Report an issue</span><h2 id="safetyTitle">Tell us what happened.</h2><form id="reportForm"><label>Reason<select name="reason"><option>Misleading description</option><option>Unsafe behavior</option><option>Counterfeit / restricted item</option><option>Spam</option><option>Copyright / academic integrity</option></select></label><label>Notes<textarea name="notes" rows="4" placeholder="Add useful context."></textarea></label><button class="btn btn-primary full" type="submit">Submit report</button></form></section>
+    <section class="modal" id="vaultModal" role="dialog" aria-modal="true" aria-labelledby="vaultModalTitle" hidden><button class="modal-close" data-close-modal aria-label="Close">×</button><span class="section-kicker">Digital Vault</span><h2 id="vaultModalTitle">Add a study resource.</h2><form id="vaultForm"><label>Title<input name="title" required></label><div class="field-grid"><label>Subject<input name="subject" required></label><label>Semester<input name="semester" required></label></div><label>Access<select name="access"><option>Free</option><option>Paid</option></select></label><label>Authorisation note<textarea name="note" rows="3" required placeholder="I own or am authorised to share this material."></textarea></label><button class="btn btn-primary full" type="submit">Save resource</button></form></section>
+  </div>
+
+  <div id="commandPalette" class="command-palette" hidden><div class="palette-backdrop" data-close-palette></div><section class="palette-panel" role="dialog" aria-modal="true" aria-label="Command palette"><div class="palette-input"><span>⌕</span><input id="paletteInput" placeholder="Search commands or features..." aria-label="Command search"><kbd>Esc</kbd></div><div class="palette-items" id="paletteItems"></div></section></div>
+
+  <div class="tour-spotlight" id="tourSpotlight" hidden><div class="tour-beam"></div></div>
+  <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="script.js"></script>
+  <script src="social.js"></script>
+</body>
+</html>

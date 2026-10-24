@@ -1,0 +1,169 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function ownsNewDocument() {
+      return signedIn() && request.resource.data.ownerUid == request.auth.uid;
+    }
+
+    function ownsCurrentDocument() {
+      return signedIn() && resource.data.ownerUid == request.auth.uid;
+    }
+
+    function validListing(data) {
+      return data.title is string
+        && data.title.size() > 0
+        && data.title.size() <= 120
+        && data.description is string
+        && data.description.size() <= 2500
+        && data.price is number
+        && data.price >= 0
+        && data.mode in ['buy', 'rent', 'borrow', 'free', 'barter', 'vacation'];
+    }
+
+    match /users/{uid} {
+      allow create: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly([
+          'name', 'email', 'photoURL', 'college', 'course', 'year',
+          'hostel', 'phone', 'createdAt', 'updatedAt'
+        ]);
+      allow get, update, delete: if signedIn() && request.auth.uid == uid;
+      allow list: if false;
+
+      match /notifications/{notificationId} {
+        allow read, update, delete: if signedIn() && request.auth.uid == uid;
+        allow create: if signedIn() && (
+          request.auth.uid == uid ||
+          (request.resource.data.senderUid == request.auth.uid &&
+           request.resource.data.chatId is string &&
+           exists(/databases/$(database)/documents/chats/$(request.resource.data.chatId)) &&
+           request.auth.uid in get(/databases/$(database)/documents/chats/$(request.resource.data.chatId)).data.participants &&
+           uid in get(/databases/$(database)/documents/chats/$(request.resource.data.chatId)).data.participants)
+        );
+      }
+    }
+
+
+    // Searchable, intentionally limited profile fields. Never put phone/email here.
+    match /publicProfiles/{uid} {
+      allow get, list: if signedIn() && resource.data.college is string;
+      allow create, update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['name','college','course','year','hostel','photoURL'])
+        && request.resource.data.college is string
+        && request.resource.data.name is string;
+      allow delete: if signedIn() && request.auth.uid == uid;
+    }
+
+    match /chats/{chatId} {
+      allow create: if signedIn() && request.auth.uid in request.resource.data.participants
+        && request.resource.data.participants.size() == 2;
+      allow get, list: if signedIn() && request.auth.uid in resource.data.participants;
+      allow update: if signedIn() && request.auth.uid in resource.data.participants
+        && request.resource.data.participants == resource.data.participants;
+      allow delete: if false;
+      match /messages/{messageId} {
+        allow read: if signedIn() && request.auth.uid in
+          get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+        allow create: if signedIn()
+          && request.resource.data.senderUid == request.auth.uid
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 2000
+          && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+        allow update, delete: if false;
+      }
+    }
+
+    // Public listing fields only. Do not put email, phone, student ID or private chat details here.
+    // Public listing queries must include where('status', '==', 'active').
+    match /listings/{listingId} {
+      allow get, list: if resource.data.status == 'active';
+      allow create: if ownsNewDocument()
+        && validListing(request.resource.data)
+        && request.resource.data.status == 'active';
+      allow update: if ownsCurrentDocument()
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && validListing(request.resource.data);
+      allow delete: if ownsCurrentDocument();
+    }
+
+    // Looking For requests may be publicly read only while open. Store only a broad location label.
+    match /requests/{requestId} {
+      allow get, list: if resource.data.status == 'open';
+      allow create: if ownsNewDocument()
+        && request.resource.data.item is string
+        && request.resource.data.item.size() > 0
+        && request.resource.data.item.size() <= 120
+        && request.resource.data.status == 'open';
+      allow update: if ownsCurrentDocument()
+        && request.resource.data.ownerUid == resource.data.ownerUid;
+      allow delete: if ownsCurrentDocument();
+    }
+
+    // Keep sensitive identifying details out of publicly readable Lost & Found fields.
+    match /lostFound/{reportId} {
+      allow get, list: if signedIn() && resource.data.status == 'open';
+      allow create: if ownsNewDocument()
+        && request.resource.data.description is string
+        && request.resource.data.description.size() > 0
+        && request.resource.data.status == 'open';
+      allow update: if ownsCurrentDocument()
+        && request.resource.data.ownerUid == resource.data.ownerUid;
+      allow delete: if ownsCurrentDocument();
+    }
+
+    // Free resource metadata may be discovered by signed-in users. Paid access needs a trusted
+    // payment/entitlement flow before private files can be released.
+    match /vaultItems/{resourceId} {
+      allow get, list: if signedIn() && (
+        resource.data.ownerUid == request.auth.uid ||
+        (resource.data.access == 'free' && resource.data.status == 'active')
+      );
+      allow create: if ownsNewDocument()
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.status == 'active';
+      allow update: if ownsCurrentDocument()
+        && request.resource.data.ownerUid == resource.data.ownerUid;
+      allow delete: if ownsCurrentDocument();
+    }
+
+    // Trade participants can see their own trade. Participants cannot change one another's identity.
+    match /trades/{tradeId} {
+      allow get, list: if signedIn() && (
+        resource.data.senderUid == request.auth.uid ||
+        resource.data.recipientUid == request.auth.uid
+      );
+      allow create: if signedIn()
+        && request.resource.data.senderUid == request.auth.uid
+        && request.resource.data.recipientUid is string
+        && request.resource.data.recipientUid != request.auth.uid
+        && request.resource.data.status == 'pending';
+      allow update: if signedIn()
+        && request.resource.data.senderUid == resource.data.senderUid
+        && request.resource.data.recipientUid == resource.data.recipientUid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt'])
+        && (
+          (request.auth.uid == resource.data.recipientUid && request.resource.data.status in ['accepted', 'declined']) ||
+          (request.auth.uid == resource.data.senderUid && request.resource.data.status == 'cancelled')
+        );
+      allow delete: if signedIn() && resource.data.senderUid == request.auth.uid;
+    }
+
+    // Reports remain private to the person who submitted them. Moderation/admin access belongs
+    // on a trusted backend, not in a publicly accessible browser rule.
+    match /reports/{reportId} {
+      allow create: if signedIn() && request.resource.data.reporterUid == request.auth.uid;
+      allow get, list, update, delete: if signedIn() && resource.data.reporterUid == request.auth.uid;
+    }
+
+    // Deny every collection not explicitly covered above.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
