@@ -4,8 +4,8 @@ Included updates
 - Firebase config set to the web app details supplied for project example-fb860. The page loads the Firebase 13.1.0 compatibility SDK to match the existing global Firebase code style.
 - Email/password sign-up and sign-in use Firebase Authentication; password reset uses Firebase email.
 - Sign-up sends an email-verification link. Verified email is required for publishing/contact actions.
-- Phone number is optional profile information; phone verification, SMS and reCAPTCHA are removed from the authentication flow.
-- Profile includes name, optional private phone number, official campus name, short name/acronym, course, department, year, hostel/campus area, city, short bio and optional private student ID.
+- Phone number is required profile information; phone verification, SMS and reCAPTCHA are removed from the authentication flow. Student registration number is also required and remains private.
+- Profile includes name, optional private phone number, college name or recognised acronym in one field, course, department, year, hostel/campus area, city, short bio, required private phone and required private student registration number.
 - Campus-scoped listing queries use a normalized collegeKey. Firestore rules restrict listing/profile reads to the signed-in user's campus key.
 - Student search is case-insensitive and uses the saved campus acronym/canonical key.
 - Chat layout fixes scrolling, uses a multi-line composer, clears input immediately, and scrolls immediately after send.

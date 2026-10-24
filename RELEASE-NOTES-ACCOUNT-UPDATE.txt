@@ -1,0 +1,13 @@
+UniTrade account update
+
+Changes in this package:
+- Phone number is required at profile completion and validated for at least 8 digits.
+- Student registration / roll number is required.
+- Phone and registration number remain in the private users/{uid} document and are not copied into publicProfiles or shown on student cards.
+- Removed the separate college short-name/acronym input. Enter a full institution name or recognised alias in the single college field.
+- Normalisation remains case-insensitive; known aliases (including IITG, NITS, GU and LPU) map to canonical keys.
+- Messaging now requires the required private profile fields as well as verified email.
+
+Important limitation:
+- A secure public search by phone number or student registration number is intentionally not implemented because it would expose sensitive personal identifiers. Use name/course/campus search for discovery. If exact phone/registration lookup is required, build a server-side, consent-based lookup with rate limiting and abuse prevention.
+- Update/deploy the included Firestore rules and test in Firebase Emulator/Rules Simulator before production. This package cannot verify the live Firebase project or deployment.
