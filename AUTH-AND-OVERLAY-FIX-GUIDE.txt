@@ -1,0 +1,43 @@
+UNITRADE AUTHENTICATION + MODAL FIX — START HERE
+================================================
+
+WHAT WAS CHANGED
+- Email/password sign-in no longer sends a verification email every time an unverified user logs in.
+- Account creation no longer automatically sends a verification email. This avoids repeated requests during signup. The user can request one manually from the campus profile.
+- Verification requests have a short client-side cooldown and clearer handling for auth/too-many-requests.
+- The website explains that Firebase's temporary anti-abuse block cannot be cleared by changing website code.
+- The campus profile modal has a visible X button, backdrop dismissal, and Escape-key dismissal.
+- Profile and student modals, general dialogs, and toast notifications have explicit stacking levels to prevent appearing behind page content.
+- Sign-in errors include actionable guidance for rate limits and unauthorized domains.
+
+IMPORTANT ABOUT auth/too-many-requests
+This error is returned by Firebase Authentication when requests are temporarily throttled. Code changes cannot reset Firebase's rate limit, and do not try to bypass it with repeated requests or by switching accounts. Stop clicking the verification button. Check your inbox and spam for a link already sent. Wait several hours (sometimes up to 24 hours) before making one new request. If the block persists, contact Firebase Support through the Firebase Console.
+
+FIREBASE SETUP FROM THE BEGINNING
+1. Open https://console.firebase.google.com/ and select the project used by UniTrade.
+2. Click the gear beside Project Overview > Project settings > General.
+3. Under Your apps, select the Web app (</>) and copy the SDK configuration.
+4. Open firebase-config.js in this ZIP. Confirm its projectId matches the Firebase project ID exactly. If not, replace the configuration values with those from your own Web app. Do not use a service-account private key in browser code.
+5. Firebase Console > Authentication > Sign-in method: enable Email/Password. Enable Google too if you use Google sign-in.
+6. Authentication > Settings > Authorized domains: add your exact Vercel hostname, e.g. your-site.vercel.app (hostname only, no https://).
+7. Firestore Database > Rules: back up current rules, review firestore.rules from this ZIP, and publish only if the rules match the code and data model. Never use allow read, write: if true. Do not delete existing collections.
+8. Use Authentication > Users to check whether the account exists. If it exists, sign in; do not repeatedly register the same email.
+9. To test email verification, request a single link, check inbox and spam, click it, return to the website and refresh.
+
+VERCEL DEPLOYMENT
+1. Download and extract the ZIP; do not upload the ZIP as index.html.
+2. Back up the current GitHub repository.
+3. Replace the matching website files with the extracted files and commit/push to the deployment branch. Keep the files together at the Vercel Root Directory.
+4. In Vercel > Project > Settings > Build and Deployment, for this static HTML site use Framework Preset Other, leave Build Command empty, and set Output Directory to . (dot). Ensure Root Directory is the folder containing index.html.
+5. Redeploy and wait for Ready. Open the production URL and hard-refresh (Cmd+Shift+R on Mac; Ctrl+Shift+R on Windows).
+6. Test signup/sign-in, save profile, publish listing, browse listings, and messaging with two verified accounts.
+
+IF A FEATURE STILL FAILS
+- Open the deployed page, right-click > Inspect > Console, then repeat the action once and read the first red error.
+- Firestore permission-denied: check deployed Firestore rules and that the website config points to the same Firebase project.
+- auth/unauthorized-domain: add the exact Vercel hostname in Firebase Authentication > Settings > Authorized domains.
+- auth/too-many-requests: stop retries and wait; do not change Firestore rules to fix an Authentication throttle.
+- Firebase initialization errors: check firebase-config.js and the browser Network tab for failed gstatic SDK requests.
+
+LIMITATIONS
+The source code has been syntax-checked and the ZIP structure verified. This package has not been tested against the user's live Firebase project or Vercel deployment. Firebase project settings, domain authorization, deployed rules, email delivery and real two-account workflows must be tested in the actual project.

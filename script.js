@@ -90,12 +90,12 @@
       const result=await cloudAuth().signInWithEmailAndPassword(email,password);
       await result.user.reload();
       if(!result.user.emailVerified) {
-        await result.user.sendEmailVerification();
-        toast('Verify your email','We sent a fresh verification link. Open it, then return to UniTrade and use “I verified my email”.','info');
+        // Do not send a verification email on every login attempt. Firebase rate-limits repeated sends.
+        toast('Email verification needed','You are signed in, but your email is not verified. Use the profile verification button only once, then check your inbox/spam folder. If Firebase reports too-many-requests, wait before trying again.','info');
       } else toast('Welcome back','You are signed in.','success');
       await persistAuthProfile(result.user);
       closeModal(); await refreshCloudData(); window.dispatchEvent(new CustomEvent('unitrade:auth-ready'));
-    } catch(err) { console.error(err); toast('Sign-in failed',err.code==='auth/invalid-credential'?'Email or password is incorrect.':(err.message||'Please try again.'),'error'); }
+    } catch(err) { console.error(err); const message=err.code==='auth/invalid-credential'?'Email or password is incorrect.':err.code==='auth/too-many-requests'?'Firebase temporarily blocked sign-in requests from this device. Stop retrying and wait several hours (sometimes up to 24 hours), then try once.':err.code==='auth/unauthorized-domain'?'This website hostname is not authorised in Firebase Authentication → Settings → Authorized domains.':(err.message||'Please try again.'); toast('Sign-in failed',message,'error'); }
   }
   async function handleEmailSignup(form) {
     if(!cloudReady()) return toast('Firebase setup required','Configure Firebase before creating an account.','error');
@@ -114,10 +114,10 @@
       const result=await cloudAuth().createUserWithEmailAndPassword(email,password);
       authUser=result.user;
       await authUser.updateProfile({displayName:name});
-      try { await authUser.sendEmailVerification(); } catch (mailError) { console.warn('Verification email could not be sent immediately:',mailError); }
+      // Keep account creation independent from verification-email delivery. The user can request one manually later.
       await persistAuthProfile(authUser,extra);
       closeModal();
-      toast('Account created','Your account is created. Check your inbox for the verification link; you can resend it from your profile.','success');
+      toast('Account created','Your account is created. Open your profile and request a verification link once. If Firebase rate-limits email requests, wait before retrying.','success');
       window.dispatchEvent(new CustomEvent('unitrade:auth-ready'));
     } catch(err) {
       console.error('UniTrade account creation:',err);
@@ -129,7 +129,7 @@
       }
     }
   }
-  async function resendVerificationEmail(){try{const u=cloudAuth()?.currentUser;if(!u)throw new Error('Sign in first.');await u.reload();if(u.emailVerified){toast('Email verified','Your email is verified.','success');window.dispatchEvent(new CustomEvent('unitrade:auth-ready'));return}await u.sendEmailVerification();toast('Verification email sent','Check your inbox and spam folder.','success')}catch(e){toast('Could not send email',e.message||'Try again later.','error')}}
+  async function resendVerificationEmail(){try{const u=cloudAuth()?.currentUser;if(!u)throw new Error('Sign in first.');await u.reload();if(u.emailVerified){toast('Email verified','Your email is verified.','success');window.dispatchEvent(new CustomEvent('unitrade:auth-ready'));return}await u.sendEmailVerification();toast('Verification email sent','Check your inbox and spam folder. Do not repeatedly request another link.','success')}catch(e){const message=e.code==='auth/too-many-requests'?'Firebase temporarily blocked repeated requests from this device. Stop retrying and wait several hours (sometimes up to 24 hours), then request one link. This cannot be cleared by changing website code.':(e.message||'Try again later.');toast('Could not send verification email',message,'error')}}
   async function refreshCloudData() {
     if (!cloudReady()) return;
     try {

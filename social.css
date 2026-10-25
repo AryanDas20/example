@@ -10,3 +10,16 @@
 .social-toast.error{background:#411d2a;border-color:#ff6f88;color:#fff}
 .social-toast.warning{background:#42341a;border-color:#f3c969;color:#fff}
 .social-toast.success{background:#123c35;border-color:#57dc9a;color:#fff}
+
+/* Overlay stacking and dismiss controls: keep all dialogs above the app and other fixed widgets. */
+#socialRoot{position:static!important;z-index:auto!important;isolation:auto!important}
+.profile-setup{z-index:50000!important;isolation:isolate;overflow:auto;overscroll-behavior:contain}
+.profile-setup form{position:relative;z-index:1}
+.profile-setup-close{position:sticky;top:0;justify-self:end;margin-bottom:-38px;margin-right:-8px;width:38px;height:38px;display:grid;place-items:center;border:1px solid var(--line-strong);border-radius:11px;background:var(--surface-2);color:var(--text);font-size:26px;line-height:1;cursor:pointer;z-index:5}
+.profile-setup-close:hover{border-color:var(--cyan);color:var(--cyan)}
+.student-profile-modal{z-index:50010!important}
+.social-panel{z-index:30000!important}
+.social-toast{z-index:60010!important;max-width:min(460px,calc(100vw - 28px));display:grid;gap:5px;white-space:normal;overflow-wrap:anywhere;box-shadow:0 24px 80px #000b}
+#verifyEmailBtn:disabled{opacity:.6;cursor:wait}
+#profileSaveHelp{display:block;line-height:1.55;overflow-wrap:anywhere}
+@media(max-width:600px){.profile-setup{padding:10px;place-items:center}.profile-setup form{padding:18px;max-height:94dvh}.profile-setup-close{top:0}}

@@ -271,3 +271,10 @@ body.cursor-ready .cursor-glow{opacity:1}
 .auth-side::after{content:"";position:absolute;z-index:-1;width:230px;height:230px;right:-75px;top:-80px;border:1px solid rgba(92,233,255,.16);border-radius:50%;box-shadow:0 0 0 28px rgba(92,233,255,.025),0 0 0 58px rgba(157,124,255,.025)}
 .auth-side-points span{font-size:11px;line-height:1.45}
 @media(max-width:620px){.auth-form-pane .field-grid{grid-template-columns:1fr}.auth-form-pane>p:not(.auth-note):not(.switch-copy){font-size:11px}.auth-side::after{width:150px;height:150px;right:-50px;top:-50px}}
+
+/* Global modal layering: app dialogs and notifications must sit above page decorations. */
+.modal-root{z-index:20000!important}
+.command-palette{z-index:21000!important}
+.toast-region{z-index:60000!important}
+.modal-close{z-index:10;display:grid;place-items:center}
+.modal-root[hidden],.modal[hidden],[hidden]{display:none!important}
