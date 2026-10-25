@@ -1,0 +1,31 @@
+UNITRADE — GOOGLE ACCOUNT CHOOSER + REGISTERED STUDENT LIST FIX
+
+Changes in this release
+- Google sign-in explicitly asks Google to show the account chooser (select_account).
+- Firebase Auth persistence is set to LOCAL for Google sign-in, so a successful sign-in can be restored on later visits.
+- Campus search reads only publicProfiles records belonging to the selected campus, then accepts only records whose UID matches their document ID and whose accountActive flag is true.
+- The signed-in user's own UID is excluded from the people list.
+- Duplicate documents for the same UID are collapsed to one card.
+- Opening a profile or starting a chat checks that the profile is still marked active and its UID matches.
+- The private phone number and student registration number are not added to publicProfiles.
+- Firestore rules now allow only the added public-profile fields (uid, accountActive, lastSeenAt) and require the UID to match the document owner.
+
+IMPORTANT FIREBASE STEP
+Publish the included firestore.rules to the SAME Firebase project configured in firebase-config.js. Deploying the website ZIP alone does not publish Firestore rules.
+
+Existing profiles
+Older publicProfiles documents do not have the new accountActive and uid fields. After deploying these files and the rules, each existing student should sign in once and have a complete campus profile so their public profile is refreshed. Until then, they will not appear in student search. This intentionally avoids showing stale or unverified legacy profile documents.
+
+Account identity note
+UniTrade uses Firebase UID as the account identity. A single UID appears once even if duplicate profile documents exist. Two different Firebase UIDs with the same display name may be different people or separate accounts; the website cannot safely merge them by name alone. Firebase Authentication does not expose a list of all registered accounts to public browser code. If an account is deleted directly from Firebase Console, its publicProfiles document should also be deleted (or deactivate it through a trusted admin workflow).
+
+Google sign-in checklist
+1. Firebase Console → Authentication → Sign-in method → Google: enabled.
+2. Firebase Console → Authentication → Settings → Authorized domains: add the exact deployed Vercel hostname.
+3. Firebase Console → Firestore Database → Rules: publish the included firestore.rules.
+4. Open the deployed site, sign out, click Continue with Google, and confirm Google shows the account chooser.
+5. Test with two different registered accounts in the same campus.
+
+Validation performed on the package
+- JavaScript syntax checks passed for script.js and social.js.
+- Runtime behavior still depends on the Firebase project, published rules, authorized domains, and actual account data; those cannot be fully tested from the source archive alone.

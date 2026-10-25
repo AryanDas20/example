@@ -1,3 +1,7 @@
+
+LATEST RELEASE NOTE — GOOGLE ACCOUNT CHOOSER / PEOPLE LIST
+Read RELEASE-NOTES-GOOGLE-PEOPLE-FIX.txt for the current account chooser, unique UID people-list behavior, and the required Firestore rules deployment step. Existing students need to sign in once after this update to refresh older public profile documents.
+
 UNITRADE — COMPLETE WEBSITE + FIREBASE FIXES
 ============================================
 

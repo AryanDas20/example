@@ -74,6 +74,9 @@
   async function handleGoogleAuth() {
     if (!cloudReady()) { toast('Firebase setup required','Add your Firebase Web app config in firebase-config.js, then redeploy.','error'); return; }
     try {
+      // Always ask Google which account to use, even if the browser already has a Google session.
+      window.unitradeGoogleProvider.setCustomParameters({prompt:'select_account'});
+      await cloudAuth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
       const result=await cloudAuth().signInWithPopup(window.unitradeGoogleProvider);
       await persistAuthProfile(result.user);
       closeModal();
