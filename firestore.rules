@@ -8,7 +8,12 @@ service cloud.firestore {
     function verifiedCampusUser() {
       return signedIn()
         && request.auth.token.email_verified == true
-        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.collegeKey is string;
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.collegeKey is string
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.phone is string
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.phone.size() >= 8
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.studentId is string
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.studentId.size() >= 2;
     }
 
     function ownsNewDocument() {
@@ -55,12 +60,17 @@ service cloud.firestore {
 
     // Searchable, intentionally limited profile fields. Never put phone/email here.
     match /publicProfiles/{uid} {
-      allow get, list: if signedIn() && resource.data.collegeKey is string && resource.data.collegeKey == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.collegeKey;
+      allow get, list: if verifiedCampusUser() && resource.data.collegeKey is string && resource.data.collegeKey == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.collegeKey;
       allow create, update: if signedIn() && request.auth.uid == uid
         && request.resource.data.keys().hasOnly(['name','college','collegeShort','collegeKey','collegeAliases','course','department','year','hostel','city','bio','photoURL'])
         && request.resource.data.college is string
         && request.resource.data.collegeKey is string
-        && request.resource.data.name is string;
+        && request.resource.data.name is string
+        // Private account document must be saved first and must contain required identifiers.
+        && get(/databases/$(database)/documents/users/$(uid)).data.phone is string
+        && get(/databases/$(database)/documents/users/$(uid)).data.phone.size() >= 8
+        && get(/databases/$(database)/documents/users/$(uid)).data.studentId is string
+        && get(/databases/$(database)/documents/users/$(uid)).data.studentId.size() >= 2;
       allow delete: if signedIn() && request.auth.uid == uid;
     }
 

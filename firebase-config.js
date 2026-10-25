@@ -1,4 +1,4 @@
-/* UniTrade Firebase web config. Enable Email/Password, Google and Phone providers in Firebase Console. */
+/* UniTrade Firebase Web SDK bootstrap. Replace this config only with the Web app config from your own Firebase project. */
 (function () {
   const firebaseConfig = {
     apiKey: "AIzaSyDyBPI4gCPo6S6kbTyfByUNoQY32IsSbpY",
@@ -9,14 +9,23 @@
     appId: "1:978072365632:web:fc620da535a2231ca8cda5",
     measurementId: "G-TJ38Y50W30"
   };
-  if (!window.firebase || !firebase.apps) {
-    console.error("UniTrade: Firebase SDK scripts did not load before firebase-config.js.");
+  try {
+    if (!window.firebase || !Array.isArray(window.firebase.apps)) {
+      throw new Error('Firebase SDK did not load. Check the Firebase script URLs and browser network access.');
+    }
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    if (typeof firebase.auth !== 'function' || typeof firebase.firestore !== 'function') {
+      throw new Error('Firebase Authentication or Firestore SDK did not load.');
+    }
+    window.unitradeAuth = firebase.auth();
+    window.unitradeDb = firebase.firestore();
+    window.unitradeGoogleProvider = new firebase.auth.GoogleAuthProvider();
+    window.unitradeFirebaseError = '';
+    window.unitradeFirebaseReady = true;
+    console.info('[UniTrade] Firebase initialized for project:', firebaseConfig.projectId);
+  } catch (error) {
     window.unitradeFirebaseReady = false;
-    return;
+    window.unitradeFirebaseError = error && error.message ? error.message : String(error);
+    console.error('[UniTrade] Firebase initialization failed:', window.unitradeFirebaseError);
   }
-  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-  window.unitradeFirebaseReady = true;
-  window.unitradeAuth = firebase.auth();
-  window.unitradeDb = firebase.firestore();
-  window.unitradeGoogleProvider = new firebase.auth.GoogleAuthProvider();
 })();

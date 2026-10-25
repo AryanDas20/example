@@ -1,13 +1,25 @@
-UniTrade account update
+UNITRADE — PROFILE SAVE AND FIREBASE PATCH
+==========================================
 
-Changes in this package:
-- Phone number is required at profile completion and validated for at least 8 digits.
-- Student registration / roll number is required.
-- Phone and registration number remain in the private users/{uid} document and are not copied into publicProfiles or shown on student cards.
-- Removed the separate college short-name/acronym input. Enter a full institution name or recognised alias in the single college field.
-- Normalisation remains case-insensitive; known aliases (including IITG, NITS, GU and LPU) map to canonical keys.
-- Messaging now requires the required private profile fields as well as verified email.
+- Profile saving no longer blocks on email verification; verification remains
+  required for campus search and messaging.
+- Added save-in-progress state, duplicate-submit protection, required-field
+  validation and step-specific Firestore error messages.
+- Required phone number and student registration/roll number.
+- Removed separate college acronym field; the single college field accepts full
+  names and recognised acronyms with case-insensitive canonical matching.
+- Private phone and registration numbers remain in users/{uid}, not publicProfiles.
+- New notification documents no longer include sender phone or email fields.
+- Firestore rules now require verified email and completed private campus details
+  for campus student discovery and messaging.
+- Added START-HERE-FIREBASE.txt with beginner setup and deployment instructions.
 
-Important limitation:
-- A secure public search by phone number or student registration number is intentionally not implemented because it would expose sensitive personal identifiers. Use name/course/campus search for discovery. If exact phone/registration lookup is required, build a server-side, consent-based lookup with rate limiting and abuse prevention.
-- Update/deploy the included Firestore rules and test in Firebase Emulator/Rules Simulator before production. This package cannot verify the live Firebase project or deployment.
+Validation performed:
+- node --check passed for script.js, social.js and firebase-config.js.
+- HTML checked for duplicate IDs and missing local script references.
+- ZIP contents will be checked after packaging.
+
+Not verified here:
+- Live Firebase Authentication, email delivery, Firestore rules deployment,
+  production hosting, or complete browser end-to-end flows. These must be tested
+  against the user's Firebase project.
