@@ -1,8 +1,0 @@
-UniTrade auth and overlay fix
-- Removed automatic verification-email sends from email login and signup to reduce repeated Firebase rate-limit triggers.
-- Added clear auth/too-many-requests and unauthorized-domain messages.
-- Added a visible close control, backdrop dismissal and Escape support for the campus profile dialog.
-- Raised overlay stacking levels for profile setup, student profiles, general modals and toast notifications.
-- Kept phone and registration number private and required for profile completion.
-- Syntax checked script.js and social.js with Node.js.
-- Live Firebase/Vercel testing is still required.
